@@ -15,11 +15,11 @@ import PSBP.Programs.Programs
     3628800
 
 #eval
-  materializeActive twiceMinusOne01 10 ==
+  materializeActive twiceMinusOneFunctorial 10 ==
    2 * (10 - 1)
 
 #eval
-  materializeActive twiceMinusOne02 10 ==
+  materializeActive twiceMinusOneSequential 10 ==
     2 * (10 - 1)
 
 #eval
@@ -31,11 +31,11 @@ import PSBP.Programs.Programs
     3628800
 
 #eval
-  materializeReactive twiceMinusOne01 10 ==
+  materializeReactive twiceMinusOneFunctorial 10 ==
     2 * (10 - 1)
 
 #eval
-  (materializeReactive twiceMinusOne02 10) ==
+  (materializeReactive twiceMinusOneSequential 10) ==
     2 * (10 - 1)
 
 #eval

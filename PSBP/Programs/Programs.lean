@@ -55,21 +55,6 @@ unsafe def factorial'
       let_ (minusOne >=> factorial') $
         multiply
 
-unsafe def fibonacci''
-    [Functional program]
-    [Sequential program]
-    [Creational program]
-    [Conditional program] :
-  program Nat Nat :=
-    if_ isZero one $
-      else_ $
-        if_ isOne one $
-          else_ $
-            (dup >=>
-            (minusOne >=> fibonacci') <&>
-            (minusTwo >=> fibonacci')) >=>
-            add
-
 unsafe def parallelFibonacci
     [Functional program]
     [Sequential program]
