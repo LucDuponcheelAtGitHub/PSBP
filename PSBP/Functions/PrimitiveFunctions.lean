@@ -19,6 +19,9 @@ def addF : Nat × Nat → Nat :=
 def multiplyF : Nat × Nat → Nat :=
   λ ⟨n, m⟩ => n * m
 
+-- def diagF : Nat → Nat × Nat :=
+--   λ n => (n, n)
+
 def twoF : Nat → Nat :=
   λ _ => 2
 

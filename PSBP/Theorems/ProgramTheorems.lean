@@ -54,7 +54,7 @@ theorem functional_sequential'
     (asProgram αfβ >=> asProgram βfγ :
       FromComputationValuedFunction computation α γ)
       = asProgram (βfγ ∘ αfβ) := by
-    simp[asProgram, andThen]
+    simp[asProgram, andThenP]
 
 theorem functorial_identity'
   {α β : Type}
@@ -112,6 +112,14 @@ theorem functorial_sequential'
     _   = (αpβ >-> (γfδ ∘ βfγ))
           := rfl
 
+@[simp] theorem function_sequential
+    (αfβ : α → β)
+    (βfγ : β → γ)
+    (a : α):
+  ((βfγ ∘ αfβ): α → γ) =
+    λ α => βfγ (αfβ α) := by
+     rfl
+
 @[simp] theorem functorial_sequential
     {α β γ δ : Type}
     [Functor computation]
@@ -121,8 +129,8 @@ theorem functorial_sequential'
   (γfδ : γ → δ) :
     ((αpβ >-> βfγ) >-> γfδ :
       FromComputationValuedFunction computation α δ)
-      = (αpβ >-> (γfδ ∘ βfγ)) := by simp[andThenF, comp_map]
-
+      = (αpβ >-> (γfδ ∘ βfγ)) := by
+        simp[andThenF, function_sequential]
 
 theorem sequential_right_identity'
   {α β : Type}
@@ -156,7 +164,7 @@ theorem sequential_right_identity'
   (αpβ : FromComputationValuedFunction computation α β) :
     ((αpβ >=> asProgram id) :
       FromComputationValuedFunction computation α β)
-      = αpβ := by simp[andThen]
+      = αpβ := by simp[andThenP]
 
 theorem sequential_left_identity'
   {α β : Type}
@@ -186,7 +194,7 @@ theorem sequential_left_identity'
   (αpβ : FromComputationValuedFunction computation α β) :
     (asProgram id >=> αpβ :
       FromComputationValuedFunction computation α β)
-    = αpβ := by simp[andThen]
+    = αpβ := by simp[andThenP]
 
 theorem sequential_associative'
   {α β γ δ : Type}
@@ -229,7 +237,7 @@ theorem sequential_associative'
   (γpδ : FromComputationValuedFunction computation γ δ) :
     ((αpβ >=> βpγ) >=> γpδ :
       FromComputationValuedFunction computation α δ) =
-      (αpβ >=> (βpγ >=> γpδ)) := by simp[andThen]
+      (αpβ >=> (βpγ >=> γpδ)) := by simp[andThenP]
 
 theorem creational_onlyFirst_asProgram'
   {α β γ : Type}
@@ -307,7 +315,7 @@ theorem creational_onlyFirst_asProgram'
     (onlyFirst (asProgram αfβ) :
       FromComputationValuedFunction computation (α × γ) (β × γ)) =
       (asProgram (λ (α, γ) => (αfβ α, γ)))
-      := by simp [onlyFirst, asProgram, product, first, second]
+      := by simp [onlyFirst, asProgram, productSeq, first, second]
 
 @[simp] theorem creational_onlyFirst_sequential
   {α β γ : Type}
@@ -320,7 +328,7 @@ theorem creational_onlyFirst_asProgram'
       (onlyFirst αpβ >=> onlyFirst βpγ :
         FromComputationValuedFunction
           computation (α × δ) (γ × δ)) := by
-          simp[onlyFirst, andThen, asProgram, product, first, second]
+          simp[onlyFirst, andThenP, asProgram, productSeq, first, second]
 
 @[simp] theorem creational_onlyFirst_first
   {α β γ : Type}
@@ -330,7 +338,7 @@ theorem creational_onlyFirst_asProgram'
     (onlyFirst αpβ >=> (first : FromComputationValuedFunction computation (β × γ) β)
       : FromComputationValuedFunction computation (α × γ) β) =
       ((first : FromComputationValuedFunction computation (α × γ) α) >=> αpβ) := by
-          simp[onlyFirst, andThen, asProgram, product, first, second]
+          simp[onlyFirst, andThenP, asProgram, productSeq, first, second]
 
 @[simp] theorem creational_onlyFirst_applyAtSecond
   {α β γ δ : Type}
@@ -341,7 +349,7 @@ theorem creational_onlyFirst_asProgram'
     (onlyFirst αpβ >=> applyAtSecond γfδ
       : FromComputationValuedFunction computation (α × γ) (β × δ)) =
       (applyAtSecond γfδ >=> onlyFirst αpβ) := by
-          simp[onlyFirst, andThen, applyAtSecond, asProgram, product, first, second]
+          simp[onlyFirst, andThenP, applyAtSecond, asProgram, productSeq, first, second]
 
 @[simp] theorem creational_onlyFirst_assoc
   {α β γ δ : Type}
@@ -351,4 +359,26 @@ theorem creational_onlyFirst_asProgram'
     (onlyFirst (onlyFirst αpβ) >=> assoc
       : FromComputationValuedFunction computation ((α × γ) × δ) (β × (γ × δ))) =
       (assoc >=> onlyFirst αpβ) := by
-          simp[onlyFirst, andThen, asProgram, product, first, second, assoc]
+        simp[onlyFirst, andThenP, asProgram, productSeq, first, second, assoc]
+
+@[simp] theorem conditional_left
+  {α β γ δ : Type}
+    [Monad computation]
+    [LawfulMonad computation]
+  (γpα : FromComputationValuedFunction computation γ α)
+  (βpα : FromComputationValuedFunction computation β α) :
+    (left >=> γpα ||| βpα
+      : FromComputationValuedFunction computation γ α) =
+      γpα := by
+       simp[left, asProgram, andThenP, foldSum]
+
+@[simp] theorem conditional_right
+  {α β γ δ : Type}
+    [Monad computation]
+    [LawfulMonad computation]
+  (γpα : FromComputationValuedFunction computation γ α)
+  (βpα : FromComputationValuedFunction computation β α) :
+    (right >=> γpα ||| βpα
+      : FromComputationValuedFunction computation β α) =
+      βpα := by
+       simp[right, asProgram, andThenP, foldSum]

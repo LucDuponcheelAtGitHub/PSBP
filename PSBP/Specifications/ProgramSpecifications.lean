@@ -16,21 +16,21 @@ infixl:50 " >-> " => andThenF
 
 class Sequential
     (program : Type → Type → Type) where
-  andThen {α β γ : Type} :
+  andThenP {α β γ : Type} :
     program α β → program β γ → program α γ
 
-export Sequential (andThen)
+export Sequential (andThenP)
 
-infixl:50 " >=> " => andThen
+infixl:50 " >=> " => andThenP
 
 class Creational
     (program : Type → Type → Type) where
-  product {α β γ : Type} :
+  productSeq {α β γ : Type} :
     program α β → program α γ → program α (β × γ)
 
-export Creational (product)
+export Creational (productSeq)
 
-infixl:60 " &&& " => product
+infixl:60 " &&& " => productSeq
 
 class Conditional
     (program : Type → Type → Type) where
@@ -41,14 +41,28 @@ export Conditional (sum)
 
 infixl:55 " ||| " => sum
 
+class Parallel (program : Type → Type → Type) where
+  bothPar {α β γ δ : Type} :
+  program α γ → program β δ → program (α × β) (γ × δ)
+
+export Parallel (bothPar)
+
+infixl:60 " |&| " => bothPar
+
 --
 -- Functional
 --
 
+-- exercise
 def identity
     [Functional program] :
   program α α :=
-    asProgram id
+    asProgram λ α => α
+
+def dup
+    [Functional program] :
+  program α (α × α) :=
+    asProgram λ α => (α, α)
 
 def first
     [Functional program] :
@@ -73,12 +87,12 @@ def applyAtSecond
 def assoc
     [Functional program] :
   program ((α × β) × γ) (α × (β × γ)) :=
-    asProgram (λ ((a, b), c) => (a, (b, c)))
+    asProgram λ ((a, b), c) => (a, (b, c))
 
 def swap
     [Functional program] :
   program (α × β) (β × α) :=
-    asProgram  λ (a, β) => (β, a)
+    asProgram λ (a, β) => (β, a)
 
 def left
     [Functional program] :
@@ -90,25 +104,6 @@ def right
   program β (γ ⊕ β) :=
     asProgram .inr
 
--- positional
-
-def positionOne
-    [Functional program] :
-  program (σ × α) α :=
-    asProgram  λ (_, α) => α
-
-def positionTwo
-    [Functional program] :
-  program ((σ × β) × α) β :=
-    asProgram λ ((_, β), _) => β
-
-def positionOneAndTwo
-    [Functional program] :
-  program ((σ × β) × α) (α × β) :=
-    asProgram λ ((_, β), α) => (α, β)
-
--- ...
-
 --
 -- Creational
 --
@@ -117,10 +112,22 @@ def let_
     [Functional program]
     [Sequential program]
     [Creational program] :
-  program α β → (program (α × β) γ → program α γ) :=
+  program α β → program (α × β) γ → program α γ :=
     λ αpβ αaβpγ => identity &&& αpβ >=> αaβpγ
 
 def in_ : α → α := id
+
+-- exercise
+def bothSeq
+    [Functional program]
+    [Sequential program]
+    [Creational program] :
+  program α γ → program β δ → program (α × β) (γ × δ) :=
+    λ αpγ βpδ =>
+      (first >=> αpγ) &&& second >=>
+        first &&& (second >=> βpδ)
+
+infixl:60 " <&> " => bothSeq
 
 def onlyFirst
     [Functional program]
@@ -129,26 +136,25 @@ def onlyFirst
   program α β → program (α × γ) (β × γ) :=
     λ αpβ => (first >=> αpβ) &&& second
 
-infixl:50 " <&& " => onlyFirst
+infixl:60 " <&& " => onlyFirst
 
 def onlySecond
     [Functional program]
     [Creational program]
     [Sequential program] :
-  program β γ → program (α × β) (α × γ) :=
-    λ βpγ => first &&& (second >=> βpγ)
+  program γ δ → program (α × γ) (α × δ) :=
+    λ γpδ => first &&& (second >=> γpδ)
 
-infixl:50 " &&> " => onlySecond
+infixl:60 " &&> " => onlySecond
 
-def both
+-- exercise
+def bothSeq'
       [Functional program]
       [Sequential program]
       [Creational program] :
     program α γ → program β δ → program (α × β) (γ × δ) :=
       λ αpγ βpδ =>
         onlyFirst αpγ >=> onlySecond βpδ
-
-infixl:50 " <&> " => both
 
 --
 -- Conditional
@@ -174,3 +180,35 @@ def if_
           t_apβ ||| f_apβ
 
 def else_ : α → α := id
+
+--
+-- Parallel
+--
+
+def productPar {α β γ : Type}
+    [Functional program]
+    [Sequential program]
+    [Parallel program] :
+  program α β → program α γ → program α (β × γ) :=
+   λ αpβ αpγ => dup >=> αpβ |&| αpγ
+
+infixl:60 " &|& " => productPar
+
+-- Positional
+
+def positionOne
+    [Functional program] :
+  program (σ × α) α :=
+    asProgram  λ (_, α) => α
+
+def positionTwo
+    [Functional program] :
+  program ((σ × β) × α) β :=
+    asProgram λ ((_, β), _) => β
+
+def positionOneAndTwo
+    [Functional program] :
+  program ((σ × β) × α) (α × β) :=
+    asProgram λ ((_, β), α) => (α, β)
+
+-- ...

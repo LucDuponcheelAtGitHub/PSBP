@@ -2,6 +2,7 @@ import PSBP.Implementations.ProgramImplementations
 
 import PSBP.Materializations.ActiveMaterialization
 import PSBP.Materializations.ReactiveMaterialization
+import PSBP.Materializations.TaskMaterialization
 
 import PSBP.Programs.Programs
 
@@ -36,3 +37,7 @@ import PSBP.Programs.Programs
 #eval
   (materializeReactive twiceMinusOne02 10) ==
     2 * (10 - 1)
+
+#eval
+  materializeTask parallelFibonacci 10 ==
+  89
