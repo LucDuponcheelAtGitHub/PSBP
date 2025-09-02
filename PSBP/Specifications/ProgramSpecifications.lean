@@ -129,6 +129,7 @@ def bothSeq
 
 infixl:60 " <&> " => bothSeq
 
+-- exercise
 def onlyFirst
     [Functional program]
     [Creational program]
@@ -138,6 +139,7 @@ def onlyFirst
 
 infixl:60 " <&& " => onlyFirst
 
+-- exercise
 def onlySecond
     [Functional program]
     [Creational program]
@@ -149,12 +151,23 @@ infixl:60 " &&> " => onlySecond
 
 -- exercise
 def bothSeq'
-      [Functional program]
-      [Sequential program]
-      [Creational program] :
-    program α γ → program β δ → program (α × β) (γ × δ) :=
-      λ αpγ βpδ =>
-        onlyFirst αpγ >=> onlySecond βpδ
+    [Functional program]
+    [Sequential program]
+    [Creational program] :
+  program α γ → program β δ → program (α × β) (γ × δ) :=
+    λ αpγ βpδ =>
+      onlyFirst αpγ >=> onlySecond βpδ
+
+-- exercise
+def productSeq'
+    [Functional program]
+    [Sequential program]
+    [Creational program] :
+  program α β → program α γ → program α (β × γ) :=
+    λ αpβ αpγ =>
+      let_ αpβ $
+        let_ (first >=> αpγ) $
+          asProgram λ ((_, β), γ) => (β, γ)
 
 --
 -- Conditional
@@ -180,6 +193,31 @@ def if_
           t_apβ ||| f_apβ
 
 def else_ : α → α := id
+
+def isLeft : γ ⊕ β → Bool :=
+  λ γoβ => match γoβ with
+      | Sum.inl _ => True
+      | Sum.inr _ => False
+
+def sum'
+    [Functional program]
+    [Sequential program]
+    [Creational program]
+    [Conditional program] :
+  program γ α → program β α → program (γ ⊕ β) α :=
+    λ γpα βpα =>
+      if_ (asProgram
+            (λ γoβ => match γoβ with
+              | Sum.inl _ => True
+              | Sum.inr _ => False))
+        (asProgram
+          (λ γoβ => match γoβ with
+            | Sum.inl γ => γ
+            | Sum.inr β => sorry) >=> γpα) $
+        (asProgram
+          (λ γoβ => match γoβ with
+            | Sum.inl _ => sorry
+            | Sum.inr β => β) >=> βpα)
 
 --
 -- Parallel
