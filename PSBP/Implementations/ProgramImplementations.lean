@@ -41,18 +41,11 @@ instance :
       (FromComputationValuedFunction computation) where
   sum := λ ⟨γfγα⟩ ⟨βfγα⟩ ↦ ⟨foldSum γfγα βfγα⟩
 
-instance : Monad Task where
-  pure := Task.pure
-  bind := Task.bind
-
 class MonadAsync
     (computation : Type → Type) where
   async {α : Type} (ufα : Unit → α) : computation α
 
 export MonadAsync (async)
-
-instance : MonadAsync Task where
-  async := Task.spawn
 
 instance
     [Monad computation]
