@@ -84,11 +84,6 @@ def applyAtSecond
   (β → γ) → program (α × β) (α × γ) :=
     λ βfγ => asProgram λ (α, β) => (α, βfγ β)
 
-def assoc
-    [Functional program] :
-  program ((α × β) × γ) (α × (β × γ)) :=
-    asProgram λ ((a, b), c) => (a, (b, c))
-
 def swap
     [Functional program] :
   program (α × β) (β × α) :=
@@ -103,6 +98,11 @@ def right
     [Functional program] :
   program β (γ ⊕ β) :=
     asProgram .inr
+
+def assoc
+    [Functional program] :
+  program ((α × β) × γ) (α × (β × γ)) :=
+    asProgram λ ((a, b), c) => (a, (b, c))
 
 --
 -- Creational
@@ -194,11 +194,6 @@ def if_
 
 def else_ : α → α := id
 
-def isLeft : γ ⊕ β → Bool :=
-  λ γoβ => match γoβ with
-      | Sum.inl _ => True
-      | Sum.inr _ => False
-
 def sum'
     [Functional program]
     [Sequential program]
@@ -213,7 +208,7 @@ def sum'
         (asProgram
           (λ γoβ => match γoβ with
             | Sum.inl γ => γ
-            | Sum.inr β => sorry) >=> γpα) $
+            | Sum.inr _ => sorry) >=> γpα) $
         (asProgram
           (λ γoβ => match γoβ with
             | Sum.inl _ => sorry

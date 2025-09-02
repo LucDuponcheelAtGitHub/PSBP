@@ -1,6 +1,6 @@
 import PSBP.Specifications.ProgramSpecifications
 
-class LawfulFunctional (program : Type → Type → Type)
+class LawfulFunctional
     [Functional program]
     [Sequential program] : Prop where
   functional_identity :
@@ -12,11 +12,11 @@ class LawfulFunctional (program : Type → Type → Type)
     (asProgram αfβ >=> asProgram βfγ : program α γ) =
       asProgram (βfγ ∘ αfβ)
 
-class LawfulFunctorial (program : Type → Type → Type)
+class LawfulFunctorial
     [Functorial program] : Prop where
   functorial_identity
       (αpβ : program α β) :
-    (αpβ >-> id : program α β) =
+    (αpβ >-> id) =
       αpβ
   functorial_sequential
       (αpβ : program α β)
@@ -25,16 +25,16 @@ class LawfulFunctorial (program : Type → Type → Type)
     (αpβ >-> βfγ >-> γfδ) =
       (αpβ >-> (γfδ ∘ βfγ))
 
-class LawfulSequential (program : Type → Type → Type)
+class LawfulSequential
     [Functional program]
     [Sequential program] : Prop where
   sequential_right_identity
       (αpβ : program α β) :
-    (αpβ >=> identity : program α β) =
+    (αpβ >=> identity) =
       αpβ
   sequential_left_identity
       (αpβ : program α β) :
-    (identity >=> αpβ : program α β) =
+    (identity >=> αpβ) =
       αpβ
   sequential_associativity
       (αpβ : program α β)
@@ -43,7 +43,7 @@ class LawfulSequential (program : Type → Type → Type)
     ((αpβ >=> βpγ) >=> γpδ) =
       (αpβ >=> (βpγ >=> γpδ))
 
-class LawfulCreational (program : Type → Type → Type)
+class LawfulCreational
     [Functional program]
     [Sequential program]
     [Creational program] : Prop where
@@ -60,14 +60,12 @@ class LawfulCreational (program : Type → Type → Type)
       (onlyFirst αpβ >=> onlyFirst βpγ)
   creational_onlyFirst_first
       (αpβ : program α β) :
-    (onlyFirst αpβ >=> (first : program (β × γ) β)
-      : program (α × γ) β) =
+    (onlyFirst αpβ >=> (first : program (β × γ) β)) =
       ((first : program (α × γ) α) >=> αpβ)
   creational_onlyFirst_applyAtSecond
       (αpβ : program α β)
       (γfδ : γ → δ) :
-    (onlyFirst αpβ >=> applyAtSecond γfδ
-      : program (α × γ) (β × δ)) =
+    (onlyFirst αpβ >=> applyAtSecond γfδ) =
       (applyAtSecond γfδ >=> onlyFirst αpβ)
   creational_onlyFirst_assoc
       (αpβ : program α β) :
@@ -75,7 +73,7 @@ class LawfulCreational (program : Type → Type → Type)
       : program ((α × γ) × δ) (β × (γ × δ))) =
       (assoc >=> onlyFirst αpβ)
 
-class LawfulConditional (program : Type → Type → Type)
+class LawfulConditional
     [Functional program]
     [Sequential program]
     [Conditional program] : Prop where
@@ -89,3 +87,42 @@ class LawfulConditional (program : Type → Type → Type)
       (βpα : program β α) :
     (right >=> γpα ||| βpα) =
       βpα
+
+-- exercise
+class ExtraLawfulCreational
+    [Functional program]
+    [Sequential program]
+    [Creational program] : Prop where
+  creational_productSeq
+      (αpβ : program α β)
+      (αpγ : program α γ)
+      (βfδ : β → δ)
+      (γfε : γ → ε) :
+    (αpβ &&& αpγ >=> (asProgram βfδ <&> asProgram γfε)) =
+      ((αpβ >=> asProgram βfδ) &&& (αpγ >=> asProgram γfε))
+
+-- exercise
+class LawfulCreationalLet
+    [Functional program]
+    [Sequential program]
+    [Creational program] : Prop where
+  creational_let_sequential
+      (αpβ : program α β)
+      (αaβpγ : program (α × β) γ)
+      (γpδ : program γ δ) :
+    ((let_ αpβ αaβpγ) >=> γpδ) =
+      (let_ αpβ (αaβpγ >=> γpδ))
+
+-- exercise
+class LawfulCreationalIf 
+    [Functional program]
+    [Sequential program]
+    [Creational program]
+    [Conditional program]: Prop where
+  conditional_if_sequential
+      (αpb : program α Bool)
+      (t_apβ : program α β)
+      (f_apβ : program α β)
+      (βpγ: program β γ) :
+    ((if_ αpb t_apβ f_apβ) >=> βpγ) =
+      ((if_ αpb (t_apβ >=> βpγ) (f_apβ >=> βpγ)))
