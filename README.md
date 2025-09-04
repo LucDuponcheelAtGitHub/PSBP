@@ -405,7 +405,7 @@ parallel. For effectful programs, the order in which they are glued together doe
 
 The `PSBP` library type classes are binary type constructor classes.
 
-REcall that I simply called them classes.
+Recall that I simply called them classes.
 
 I use few naming and showing conventions
 
