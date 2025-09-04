@@ -1,20 +1,24 @@
-# Program Specification Based Programming in `Lean`
+# Program Specification Based Programming
 
 **author** Luc Duponcheel
 
-**warning** Expect frequent changes and/or additions.
+**implementation language** `Lean`
+
+## Warning
+
+Expect frequent changes and/or additions.
 
 ## Naming conventions
 
 Every document uses its naming conventions. Below are the two most relevant ones of this document.
 
 - The word "programming" has a general meaning : (the process of) writing code.
-- The word, `"program"`, intentionally shown in typewriter font, has a specific, technical meaning : it is used as the
-name of the parameter of various programming related `Lean` binary type constructor classes.
-
-I hope that the naming conventions above do not lead to any confusion.
+- The word "program" has a specific meaing : it refers to`program`, intentionally shown in typewriter font, the name of
+the parameter of various programming related `Lean` binary type constructor classes. 
 
 By the way, the title of this document uses the naming conventions above.
+
+Anyway, I hope that the naming conventions above do not lead to any confusion.
 
 ## About
 
@@ -22,37 +26,35 @@ This document can be used as a, somewhat special, not to say opinionated, progra
 
 It is not a `Lean` programming course. 
 
-I.m.h.o. the course is especially useful for mathematicians and/or computer scientists, researchers as well as students,
-who are interested in mathematical foundations of programming.
-
-The course starts at section
-[The `PSBP` Library](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#the-psbp-library).
+The course is especially useful for mathematicians and/or computer scientists, researchers as well as students, who are
+interested in mathematical foundations of programming.
 
 You may wish to skip section 
 [Programs versus Computations](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#programs-versus-computations)
 and section
-[`PSBP`](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#psbp).
+[`PSBP`](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#psbp) before section
+[The `PSBP` Library](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#the-psbp-library), the section
+where the programming course starts.
 
-The repo contains a file
-[All.lean](https://github.com/LucDuponcheelAtGitHub/PSBP/blob/master/PSBP/All.lean) containing all code of the library
-and all solutions to the exercises.
+The repository contains a file
+[All.lean](https://github.com/LucDuponcheelAtGitHub/PSBP/blob/master/PSBP/All.lean) containing all the code of the
+`PSBP` library and all the solutions to the exercises of the course.
 
-You may wish to produce such a file from scratch (copy/pasting library code) write solutions to the exercises yourself.
+You may wish to produce such a file from scratch, copy/pasting library code and writing solutions to exercises.
 
-What is special about the course is that its code is a programming course for `Lean`.
+What is special about the course is that its code is a programming course for `Lean` itself!
 
 When I worked with Doaitse Swierstra at the University of Utrecht, he once told me that, apart from sound proving 
 techniques like "proof by induction", there is also this unsound proving technique "proof by intimidation". If no
 student complains about the correctness of a proof, then the proof is correct. Of course, Doaitse did not apply this
 technique when teaching. `Lean` would be this very demanding student asking you for more and more proof details before
 willing to accept the correctness of the proof. But `Lean` would also be this very helpful student that would be able to
-infer the proof details for you.
+infer proof details for you.
 
 The first sections of the course do not always define all concepts they use. Please keep on reading. All concepts will,
 eventually, be defined. Starting from section "The `PSBP` library", the course is self-contained and requires, at least
-in theory, no previous knowledge (apart from some `Lean` programming knowledge). In particular, the course does not use
-concepts that have not been defined. Anyway, student `Lean` would complain if that would be the case (you sould complain
-as well).
+in theory, no previous knowledge (apart from some `Lean` knowledge). In particular, the course does not use concepts
+that have not been defined. `Lean` would complain if that would be the case (and you sould complain as well).
 
 So let's end this section with a, somewhat offensive (I am sorry), statement that, hopefully, motivates you to keep on
 reading the course : if `Lean` can understand the course then you should be able to understand it as well.
@@ -61,32 +63,32 @@ reading the course : if `Lean` can understand the course then you should be able
 
 `PSBP` is a pointfree effectful functional programming library, written using the `Lean` programming language.
 
-Pointfree versus pointful, resp. effectful versus effectfree, will be explained later.
+Apart from "functional programming" the statement above uses two important adjectives and one important noun
+
+- adjective "pointfree" (as opposed to "pointful" in this course)
+- adjectuve "effectful" (as opposed to "effectfree" in this course)
+
+The adjectives above will be explained later in the course.
+
+- noun "library" (as opposed to "language" in this course)
+
+Hopefully, the nouns above do not need explanation.
 
 In what follows `Lean` will not often explictly be mentioned. It will often implicitly be taken for granted.
 
 `PSBP` can be seen as a programming DSL, a Domain Specific Language for the programming domain.
 
 `PSBP` has a variety of programming related binary type constructor classes, among others `Functional`, `Functorial`,
-`Creational`, `Sequential`, `Conditional` and `Parallel`. `PSBP` code, consistentl,y names their binary type constructor
+`Creational`, `Sequential`, `Conditional` and `Parallel`. `PSBP` code, consistently, names their binary type constructor
 parameter `program`.
 
-The `PSPB` type constructor classes, just like all other classes, are specifications, also called interfaces in the
-programming world. They have members that declare basic program specifications and basic program specification
-combinators to combine program specifications to composite program specifications. Derived program specifications and
-derived program specification combinators can then be defined in terms of (declared or defined) program specifications
-and (declared or defined) program specification combinators. As such program specifications are components of a
-component system.
+The `PSPB` type constructor classes are specifications, also called interfaces in the programming world. They have members that declare basic program specifications and basic program specification combinators to combine program specifications to composite program specifications. Derived program specifications and derived program specification combinators can then be defined in terms of (declared or defined) program specifications and (declared or defined program specification combinators. As such program specifications are components of a component system.
 
 The `Lean` standard library has a variety of computing related unary type constructor classes, among others `Functor`,
 `Applicative` and `Monad`. `PSBP` code consistently names their unary type constructor parameter `computation`.
 
-The `Lean` standard library type constructor classes above, just like all other classes, are specifications, also called
-interfaces in the programming world. They have members that declare basic computation specifications and basic
-computation specification combinators to combine computation specifications to composite computation specifications.
-Derived computation specifications and derived computation specification combinators can then be defined in terms of
-(declared or defined) computation specifications and (declared or defined) computation specification combinators. As
-such computation specifications are components of a component system.
+The `Lean` standard library type constructor classes above are specifications, also called interfaces in the programming world. They have members that declare basic computation specifications and basic computation specification combinators to combine computation specifications to composite computation specifications. Derived computation specifications and derived computation specification combinators can then be defined in terms of (declared or defined) computation specifications and (declared or defined) computation specification combinators. As such computation specifications are
+components of a component system.
 
 By now you may be asking why I used "program specification" resp. "computation specification" instead of simply using
 "program" resp. "computation". First of all, because program specifications resp. computation specifications are
@@ -113,7 +115,7 @@ specification.
 
 ## Programs versus Computations
 
-Using its computing related unary type classes, the standard `Lean` library already enables
+Using its computing related unary type constructor classes, the standard `Lean` library already enables
 "Computation Specification Based Programming". So why promoting "Program Specification Based Programming" in the first place?
 
 In short, informally, and very subjective, it is all a matter of taste (you may wish to give up reading the course).
@@ -129,14 +131,14 @@ understand problem domains we are confronted with.
 
 Bridge building engineers may benefit form studying appropriate mathematics to understand what bridge requirements are
 all about. Vehicle building engineers may benefit form studying appropriate mathematics to understand what vehicle
-requirements are all about. Likewise, programming engineers (programmers) may benefit form studying appropriate mathematics to understand what program requirememnts are all about.
+requirements are all about. Likewise, programming engineers (programmers) may benefit form studying appropriate mathematics to understand what program requirements are all about.
 
 I used the word "requirements" because separating specifications from implementations is generally agreed upon to be useful to understand problem domains 
 
 A bridge specification states, for example, that it must be able to carry the weight of a number of vehicles. How it is
 able to carry that weight is an implementation concern. Maybe one bridge is more pleasing to look at, more durable than,
-or less expensive than as another one. A vehicle specification states, for example, that it must be able to transport a
-number of passengers. How it is able to transport that number of passengers is an implementation concern. Maybe one car is more comfortable than, or less fuel consuming than another one. A program specification states, for example, that a program must be able to create composite data and to perform conditional logic. How it is able to create composite data and to perform conditional logic is an implementation concern. Maybe one program is more CPU (or GPU or NPU) effecient, or less RAM consuming than another one.
+or less expensive than another one. A vehicle specification states, for example, that it must be able to transport a
+number of passengers. How it is able to transport that number of passengers is an implementation concern. Maybe one car is more comfortable than, or less fuel consuming than another one. A program specification states, for example, that a program must be able to create composite data and to perform conditional logic. How it is able to create composite data and to perform conditional logic is an implementation concern. Maybe one program is more CPU effecient, or less RAM consuming than another one.
 
 Note that I wrote bridge, resp. car, resp. program instead of of materialization corresponding to an implementation of
 the bridge specification, resp. car specification, resp. program specification.
@@ -148,8 +150,8 @@ just a beginning. It shows that you are able to use 20% imagination and 80% tran
 I did, among others, mathematics research on
 [Non-archimedean induced representations of compact zerodimensional groups](https://www.numdam.org/article/CM_1986__57_1_3_0.pdf).
 Not that it matters much for the content of the course. What does matter is that I soon realized that, those days, in
-Belgium, mathematics could mainly be done as a backyard ritual, so, in order to earn money for a living, I decided to
-become a programmer. Being addicted to research, I also decided to do computer science research as a late at night hobby
+Belgium, mathematics could mainly be done as a backyard ritual. In order to earn money for a living, I decided to become
+a programmer. Being addicted to research, I also decided to do computer science research as a late at night hobby
 (typically starting at 9PM).
 
 I studied function level programming systems, supported by the pointfree effectfree functional programming language
@@ -162,11 +164,11 @@ who is also a mathematician. The library was written using the
 [`Pascal`](https://en.wikipedia.org/wiki/Pascal_%28programming_language%29) programming language.
 
 The first functional programming language I used extensively was
-[`Miranda`](https://www.cs.kent.ac.uk/people/staff/dat/Miranda/).
+[`Miranda`](https://en.wikipedia.org/wiki/Miranda_%28programming_language%29).
 `Miranda` turned out to be a perfect language to learn (not to say become addicted to) functional programming.
 
 The next functional programming language I used extensively was `Gofer`, later evolving to
-[`Hugs`](https://www.haskell.org/Hugs/).
+[`Hugs`](https://www.haskell.org/hugs/).
 `Gofer` was the first functional programming language supporting type constructor classes. They are appropriate to write
 the computing related specifications of effectful pointful functional programming libraries. The mathematical
 foundations of those specifications are [monads](https://en.wikipedia.org/wiki/Monad_%28functional_programming%29).
@@ -184,10 +186,10 @@ wrote the paper (and the code that came with it) together by sending emails with
 turned out to be an efficient way to work together. While one of us was sleeping (in Europe resp. the USA) the other one
 was working (in the USA resp. Europe). The paper also contained equational proofs. Those days, they were simply encoded
 as lists of expressions representing equational proof steps. `Gofer` did not have a formal proof correctness reviewing
-mechanism like Lean has, but, type correctness provided at least some formal proof correctness confidence.
+mechanism like `Lean` has, but, type correctness provided at least some formal proof correctness confidence.
 
 The other papers were written while I was working, for two years, at the University of Utrecht. That was a unique
-experience for me for which I am, forever, greatful to Doaitse Swierstrsa. Erik Meijer, thoes years also working at the
+experience for me for which I am, forever, greatful to Doaitse Swierstrsa. Erik Meijer, those years also working at the
 University of Utrecht, invited me for a lecture, as such introducing me to Doaitse. Apart from being an outstanding
 computer scientist, Doaitse was the best people manager I have ever worked for. Erik does not need any introduction. He
 became a living legend. Also Graham Hutton worked at the University of Utrecht when I was working there. I was in good
@@ -217,11 +219,7 @@ programming? The more powerful they are the less implementation flexibility they
 can parse context sensitive grammars, while applicative parsers cannot, but, applicative parsers allow for more flexible
 error handling than monadic parsers when parsing context unsensitive grammars.
 
-Programming is also about elegance and programming libraries are also about ease of use. I.m.h.o. pointfree programming
-is more elegant than pointful programming and pointfree programming libraries are easier of use than pointful
-programming libraries.
-
-Of course this is a matter of taste, but let me motivate my taste ... .
+Programming is also about elegance and programming libraries are also about ease of use. Pointfree programming is more elegant than pointful programming and pointfree programming libraries are easier of use than pointful programming libraries. Of course this is a matter of taste.
 
 The `Applicative` specification and the `Monad` specification specify computation capabilities. Think of computations as
 effectful expressions. They are operational artifacts. They do not really have a meaning in the mathematical sense and
@@ -233,13 +231,13 @@ classes in terms of whose members the computations (recall, more precisely, comp
 
 The programming related specifications of the course specify, not surprisingly, program capabilities. Think of programs
 as effectful functions. They are denotational artifacts. They do have a meaning in the mathematical sense and can be
-given a meaningful name. For example `λ x => x * x` can be given a the meaningful name `square`. Of course functions and
+given a meaningful name. For example `λ x => x * x` can be given the meaningful name `square`. Of course functions and
 programs can also be looked at as operational artifacts. Just like functions, programs, by somehow running them, transform an initial value to a final value, but, somehow running them may perform side effects along the way. The "somehow" in the previous sentence is important, because it depends on the materialization corresponding to instances of the type constructor classes in terms of whose members the programs (recall, more precisely, program specificaton) have been written.
 
 By the way, a value can be an atomic-value or a composite-value, repesented as a (nested) tuple. As such values are
 components of a component system.
 
-I.m.h.o. it is more natural to think denotationally, about "what", than to think operationally, about "how".
+It is more natural to think denotationally, about "what", than to think operationally, about "how".
 
 Let's try to illustrate this with some `Lean` code fragments.
 
@@ -306,12 +304,12 @@ I can more easily explain `andThenP` and `sequential_associativity` than `bind` 
 
 Explain both `andThenP` and `sequential_associativity`, resp. `bind` and `bind_assoc`.
 
-*Hint* (you may wish to ignore it) :
+*Hint* : (you may wish to ignore the hint) :
 
 I think of a function as transforming an initial value yielding a final value. Likewise, I think of a program as
 transforming an initial value yielding a final value, potentially performing side effects along the way.
 
-I think of a evaluating an expression as yielding a value. Likewise, I think of a executing a computation as yielding a
+I think of evaluating an expression as yielding a value. Likewise, I think of executing a computation as yielding a   
 value, potentially performing side effects along the way.
 
 You can, for your explanation, ignore side effects for now. Of course you may wish to explain side effects as well.
@@ -364,7 +362,7 @@ transforming that intermediate value using a final computation valued function `
 
 ### Programs and computations as components
 
-As far as components of a component system is concerned, I also like programs more than computations.
+As far as being components of a component system is concerned, I also like programs more than computations.
 
 Let's have a closer look at the associativity law code fragments
 
@@ -388,9 +386,7 @@ computation valued function `αfcβ`. Programming with computations is pointful 
 Programs do not need to be opened. Programming with programs is pointfree programming. Think of using them as playing
 with Lego ariifacts.
 
-I.m.h.o, it is a more elegant and easier to program pointfree than to program pointful. Likewise, i.m.h.o., it is more
-elegant and easier to reason in terms of pointfree laws than to reason in terms of pointful laws. Of course, this is a
-matter of taste. Nevertheless I hope to convince you.
+It is a more elegant and easier to program pointfree than to program pointful. Likewise, It is more elegant and easier to reason in terms of pointfree laws than to reason in terms of pointful laws. Of course, this is a matter of taste. Nevertheless I hope to convince you.
 
 ### Positional Programming
 
@@ -402,12 +398,11 @@ initial value and intermediate values are accessed positionally. The creation of
 general programs. A sequential recipe-like program glues programs together, similar to an operating system scripting
 language gluing operating system executables together.
 
-For effectfree programs, the order in which they are glued together does not matter. They can be glued together in 
-parallel. For effectful programs, the order in which they are glued together does matter.
+For effectful programs, the order in which they are glued together really matters.
 
 ## The `PSBP` library
 
-The `PSBP` library type classes are binary type constructor classes.
+The `PSBP` library type constructor classes are binary type constructor classes.
 
 Recall that I simply called them classes.
 
@@ -432,6 +427,10 @@ I use few naming and showing conventions
     >───┼αpβ┼───>
         ╰───╯
 ```
+
+Much in the same way I also use names like `αaβ`, where the `a` stands for "and", and names like `αoβ`, where the `o` stands for "or".
+
+By abuse of language, the specification requirements of the `PSBP` classes are written as statements.
 
 ### `class Functional`
 
@@ -706,8 +705,8 @@ Define `Nat` type based programs `isZero`, `isOne`, `one`, `minusOne`, `minusTwo
 Recall that functions can be used as programs. Simple functions can be defined using simple lambda expressions or as
 separate `def`s.
 
-- The names of the programs `isZero`, `isOne`, `minusOne` and `minusTwo` speak for themselves.
-- The names of the programs `add` and `multiply` speak for themselves, their initial value type is `Nat × Nat`.
+- The names `isZero`, `isOne`, `minusOne` and `minusTwo` speak for themselves.
+- The names `add` and `multiply` speak for themselves, their initial value type is `Nat × Nat`.
 - Program `one` is the constant `1` function, used as a program,
 
 ### Solution (primitive programs)
@@ -874,8 +873,10 @@ unsafe def factorial'
 The `unsafe` keyword is used because the definitions above do not type check without them. Lean cannot prove that
 `fibonacci` and `factorial` can be used in a safe way. Note that they are program specifications. They need to be
 materialized before they can be used. Much in the same way, specifications of effects are descriptions of side-effects.
-They need to be materialized to perform side effects. Compare this with a painting of something going wrong. It is safe
-to hang the painting on your wall. Nothing will wrong will happen.
+They need to be materialized to perform side effects. 
+
+It is instructive to compare this with a painting of something going wrong. It is safe to hang the painting on your   
+wall. Nothing will go wrong.
 
 ### `parallelFibonacci`
 
@@ -936,7 +937,7 @@ is `program α γ → program β δ → program (α × β) (γ × δ)`.
 *Hint* :
 
 Define `first` of type `program (α × β) α` and `second` of type `program (α × β) β` and, somehow, use them, together
-with `>>>`, from `Sequential`, and `&&&`, from `Creational`.
+with `>=>`, from `Sequential`, and `&&&`, from `Creational`.
 
 This exercises is an examples of a "getting the types right puzzle".
 
@@ -990,6 +991,8 @@ Perhaps you already defined `onlyFirst` and `onlySecond` (perhaps using other na
 "getting the types right puzzle" of the previous exercise. Anyway, define them using names `onlyFirst` and `onlySecond`
 so that they can also be reused later using those names.
 
+<details>
+
 ```lean
 def onlyFirst
     [Functional program]
@@ -1017,6 +1020,8 @@ def bothSeq'
     λ αpγ βpδ =>
       onlyFirst αpγ >=> onlySecond βpδ
 ```
+
+</details>
 
 ### Exercise (`Functorial` using `Functional` and `Sequential`)
 
@@ -1078,7 +1083,7 @@ That being said, you may argue that what you have read so far is also an unneces
 showed (effectfree) functions. But think of replacing `minusOne` and/ or `minusTwo` by an effectful program. Having more
 implementation and corresponding materialization flexibility when dealing with effects can really be useful. A standard
 example is more flexible error handling when processing a submitted web form. Another example is error correction when
-parsing a course.
+parsing a document.
 
 ### Exercise (`productSeq'` using `let_`)
 
@@ -1231,7 +1236,7 @@ The `sequential_associativity` law states that the sequential combination of pro
 
 `Creational` comes with laws.
 
-They all involve `onlyFirst`.
+They all involve `onlyFirst`. They are the `arrow` laws (`Sequential` is involved, `Conditional` is not involved).
 
 Let
 
@@ -1304,7 +1309,7 @@ def left
     asProgram .inl
 ```
 
-in
+and
 
 ```lean
 def right
@@ -1312,6 +1317,8 @@ def right
   program β (γ ⊕ β) :=
     asProgram .inr
 ```
+
+in
 
 ```lean
 class LawfulConditional
@@ -1392,6 +1399,8 @@ class ExtraLawfulCreationalQuestion
 
 ### Solution (extra `Creational` law question)
 
+<details>
+
 The order of the side effects performed by the programs involved matters.
 Therefore, because of it's distributive nature, this law is unlikely to be a valid one for most implementations.
 
@@ -1399,6 +1408,8 @@ In fact, for the computation valued function implementation (see next section).
 
 - the order of the left hand side is `αpβ`, `αpγ`, `βpδ`, `γpε`
 - the order of the right hand side is `αpβ`, `βpδ`, `αpγ`,`γpε`
+
+</details>
 
 ### Exercise (extra `Creational` law for `let_`)
 
@@ -1438,6 +1449,10 @@ class LawfulCreationalLet
       (let_ αpβ (αaβpγ >=> γpδ))
 ```
 
+The order of the side effects performed by the programs involved matters.
+In this case it's sequential nature does not matter, therefore this law is likely to be a valid one for most
+implementations.
+
 </details>
 
 ### Exercise (extra `Conditional` law for `if_`)
@@ -1467,11 +1482,11 @@ class LawfulCreationalIf
       ((if_ αpb (t_apβ >=> βpγ) (f_apβ >=> βpγ)))
 ```
 
-</details>
-
 The order of the side effects performed by the programs involved matters.
 In this case it's sequential nature does not matter, therefore this law is likely to be a valid one for most
 implementations.
+
+</details>
 
 ## Computation Valued Functions
 

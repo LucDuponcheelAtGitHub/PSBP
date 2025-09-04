@@ -53,7 +53,6 @@ infixl:60 " |&| " => bothPar
 -- Functional
 --
 
--- exercise
 def identity
     [Functional program] :
   program α α :=
@@ -117,7 +116,6 @@ def let_
 
 def in_ : α → α := id
 
--- exercise
 def bothSeq
     [Functional program]
     [Sequential program]
@@ -129,7 +127,6 @@ def bothSeq
 
 infixl:60 " <&> " => bothSeq
 
--- exercise
 def onlyFirst
     [Functional program]
     [Creational program]
@@ -139,7 +136,6 @@ def onlyFirst
 
 infixl:60 " <&& " => onlyFirst
 
--- exercise
 def onlySecond
     [Functional program]
     [Creational program]
@@ -149,7 +145,6 @@ def onlySecond
 
 infixl:60 " &&> " => onlySecond
 
--- exercise
 def bothSeq'
     [Functional program]
     [Sequential program]
@@ -158,7 +153,6 @@ def bothSeq'
     λ αpγ βpδ =>
       onlyFirst αpγ >=> onlySecond βpδ
 
--- exercise
 def productSeq'
     [Functional program]
     [Sequential program]

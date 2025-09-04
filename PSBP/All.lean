@@ -53,10 +53,12 @@ export Parallel (bothPar)
 
 infixl:60 " |&| " => bothPar
 
+-- exercise
 def identity
     [Functional program] :
   program α α :=
     asProgram λ α => α
+--
 
 def let_
     [Functional program]
@@ -88,6 +90,7 @@ def let_
 
 def else_ : α → α := id
 
+-- exercise
 def isZeroF: Nat → Bool :=
   λ n => n == 0
 
@@ -143,6 +146,7 @@ def multiply
     [Functional program] :
   program (Nat × Nat) Nat :=
     asProgram multiplyF
+--
 
 unsafe def fibonacci
     [Functional program]
@@ -158,6 +162,7 @@ unsafe def fibonacci
             (minusTwo >=> fibonacci) >=>
             add
 
+-- exercise
 unsafe def fibonacci'
     [Functional program]
     [Sequential program]
@@ -169,6 +174,7 @@ unsafe def fibonacci'
         (minusOne >=> fibonacci') &&&
         (minusTwo >=> fibonacci') >=>
         add
+--
 
 unsafe def factorial
     [Functional program]
@@ -182,6 +188,7 @@ unsafe def factorial
           in_ $
             multiply
 
+-- exercise
 unsafe def factorial'
     [Functional program]
     [Sequential program]
@@ -192,6 +199,7 @@ unsafe def factorial'
     if_ isZero one $
       let_ (minusOne >=> factorial') $
         multiply
+--
 
 def dup
     [Functional program] :
@@ -220,6 +228,7 @@ unsafe def parallelFibonacci
         (minusTwo >=> parallelFibonacci) >=>
         add
 
+-- exercise
 def first
     [Functional program] :
   program (α × β) α :=
@@ -240,7 +249,9 @@ def bothSeq
         first &&& (second >=> βpδ)
 
 infixl:60 " <&> " => bothSeq
+--
 
+-- exercise
 def onlyFirst
     [Functional program]
     [Creational program]
@@ -255,7 +266,6 @@ def onlySecond
   program γ δ → program (α × γ) (α × δ) :=
     λ γpδ => first &&& (second >=> γpδ)
 
-
 def bothSeq'
     [Functional program]
     [Sequential program]
@@ -263,7 +273,9 @@ def bothSeq'
   program α γ → program β δ → program (α × β) (γ × δ) :=
     λ αpγ βpδ =>
       onlyFirst αpγ >=> onlySecond βpδ
+--
 
+-- exercise
 instance
     [Functional program]
     [Sequential program] :
@@ -271,6 +283,7 @@ instance
     andThenF {α β γ: Type} :
       program α β → (β → γ) → program α γ :=
         λ αpβ βfγ => αpβ >=> asProgram βfγ
+--
 
 def twiceMinusOneFunctorial
     [Functional program]
@@ -286,6 +299,7 @@ def twiceMinusOneSequential
   program Nat Nat :=
     minusOne &&& minusOne >=> add
 
+-- exercise
 def productSeq'
     [Functional program]
     [Sequential program]
@@ -295,7 +309,9 @@ def productSeq'
       let_ αpβ $
         let_ (first >=> αpγ) $
           asProgram λ ((_, β), γ) => (β, γ)
+--
 
+-- exercise
 def sum'
     [Functional program]
     [Sequential program]
@@ -315,6 +331,7 @@ def sum'
           (λ γoβ => match γoβ with
             | Sum.inl _ => sorry
             | Sum.inr β => β) >=> βpα
+--
 
 class LawfulFunctional
     [Functional program]
@@ -429,6 +446,7 @@ class LawfulConditional
     (right >=> γpα ||| βpα) =
       βpα
 
+-- exercise
 class InCompleteExtraLawfulCreational
     [Functional program]
     [Sequential program]
@@ -464,7 +482,9 @@ class ExtraLawfulCreationalQuestion
       (γpε : program γ ε) :
     (αpβ &&& αpγ >=> (βpδ <&> γpε)) =
       ((αpβ >=> βpδ) &&& (αpγ >=> γpε))
+--
 
+-- exercise
 class IncompleteLawfulCreationalLet
     [Functional program]
     [Sequential program]
@@ -486,7 +506,9 @@ class LawfulCreationalLet
       (γpδ : program γ δ) :
     ((let_ αpβ αaβpγ) >=> γpδ) =
       (let_ αpβ (αaβpγ >=> γpδ))
+--
 
+-- exercise
 class LawfulCreationalIf
     [Functional program]
     [Sequential program]
@@ -499,6 +521,7 @@ class LawfulCreationalIf
       (βpγ: program β γ) :
     ((if_ αpb t_apβ f_apβ) >=> βpγ) =
       ((if_ αpb (t_apβ >=> βpγ) (f_apβ >=> βpγ)))
+--
 
 structure FromComputationValuedFunction
     (computation : (Type → Type)) (α β : Type) where

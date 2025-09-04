@@ -88,7 +88,6 @@ class LawfulConditional
     (right >=> γpα ||| βpα) =
       βpα
 
--- exercise
 class ExtraLawfulCreational
     [Functional program]
     [Sequential program]
@@ -101,7 +100,6 @@ class ExtraLawfulCreational
     (αpβ &&& αpγ >=> (asProgram βfδ <&> asProgram γfε)) =
       ((αpβ >=> asProgram βfδ) &&& (αpγ >=> asProgram γfε))
 
--- exercise
 class LawfulCreationalLet
     [Functional program]
     [Sequential program]
@@ -113,8 +111,7 @@ class LawfulCreationalLet
     ((let_ αpβ αaβpγ) >=> γpδ) =
       (let_ αpβ (αaβpγ >=> γpδ))
 
--- exercise
-class LawfulCreationalIf 
+class LawfulCreationalIf
     [Functional program]
     [Sequential program]
     [Creational program]
