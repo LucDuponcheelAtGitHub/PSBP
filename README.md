@@ -628,12 +628,14 @@ You need to declare using `Functional` as follows `def identity [Functional prog
 ### Solution (`identity`)
 
 <details>
+
 ```lean
 def identity
     [Functional program] :
   program α α :=
     asProgram λ α => α
 ```
+
 </details>
 
 ### `def let_`
