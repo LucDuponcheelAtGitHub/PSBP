@@ -8,25 +8,27 @@ instance [Applicative computation] :
     Functional
       (FromComputationValuedFunction computation) where
   asProgram :=
-    λ αfβ ↦ ⟨λ α ↦ pure $ αfβ α⟩
+    λ αfβ => ⟨λ α => pure $ αfβ α⟩
 
 instance [Functor computation] :
     Functorial
       (FromComputationValuedFunction computation) where
   andThenF :=
-    λ ⟨αfcβ⟩ βfγ ↦ ⟨λ α ↦ βfγ <$> αfcβ α⟩
+    λ ⟨αfcβ⟩ βfγ => ⟨λ α => βfγ <$> αfcβ α⟩
+
+instance [Applicative computation] :
+    Creational
+      (FromComputationValuedFunction computation) where
+  productSeq :=
+    λ ⟨αfcβ⟩ ⟨αfcγ⟩ =>
+      ⟨λ α => .mk <$> αfcβ α <*> αfcγ α⟩
 
 instance [Monad computation] :
     Sequential
       (FromComputationValuedFunction computation) where
   andThenP :=
-    λ ⟨αfcβ⟩ ⟨βfcγ⟩ ↦ ⟨λ α ↦ αfcβ α >>= βfcγ⟩
-
-instance [Applicative computation] :
-    Creational
-      (FromComputationValuedFunction computation) where
-  productSeq := λ ⟨αfcβ⟩ ⟨αfcγ⟩ ↦
-    ⟨λ α ↦ .mk <$> αfcβ α <*> αfcγ α⟩
+    λ ⟨αfcβ⟩ ⟨βfcγ⟩ =>
+      ⟨λ α => αfcβ α >>= βfcγ⟩
 
 def foldSum {γ β α : Type}
     (γfα : γ → α)
@@ -39,7 +41,9 @@ def foldSum {γ β α : Type}
 instance :
     Conditional
       (FromComputationValuedFunction computation) where
-  sum := λ ⟨γfγα⟩ ⟨βfγα⟩ ↦ ⟨foldSum γfγα βfγα⟩
+  sum :=
+    λ ⟨γfγα⟩ ⟨βfγα⟩ =>
+      ⟨foldSum γfγα βfγα⟩
 
 class MonadAsync
     (computation : Type → Type) where

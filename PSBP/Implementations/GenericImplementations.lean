@@ -12,8 +12,8 @@ instance
 
 instance
     [Functional program]
-    [Creational program]
-    [Sequential program] :
+    [Sequential program]
+    [Creational program] :
     Positional program where
   at_ {σ α β γ : Type} :
     program α β →

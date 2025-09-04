@@ -21,8 +21,8 @@ def modifyStateWith
 
 def withInitialStateAsInitialValue
     [Functional program]
-    [Creational program]
     [Sequential program]
+    [Creational program]
     [Conditional program]
     [WithState σ program] :
   program σ τ → program α τ :=

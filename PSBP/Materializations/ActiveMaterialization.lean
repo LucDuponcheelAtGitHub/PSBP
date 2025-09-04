@@ -7,4 +7,4 @@ abbrev ActiveProgram :=
 
 def materializeActive :
     ActiveProgram α β → (α → β) :=
-  λ ⟨αfaβ⟩ α => αfaβ α -- .run
+  λ ⟨αfaβ⟩ α => αfaβ α
