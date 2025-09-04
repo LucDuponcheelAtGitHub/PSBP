@@ -25,6 +25,20 @@ It is not a `Lean` programming course.
 I.m.h.o. the course is especially useful for mathematicians and/or computer scientists, researchers as well as students,
 who are interested in mathematical foundations of programming.
 
+The course starts at section
+[The `PSBP` Library](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#the-psbp-library).
+
+You may wish to skip section 
+[Programs versus Computations](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#programs-versus-computations)
+and section
+[`PSBP`](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#psbp).
+
+The repo contains a file
+[All.lean](https://github.com/LucDuponcheelAtGitHub/PSBP/blob/master/PSBP/All.lean) containing all code of the library
+and all solutions to the exercises.
+
+You may wish to produce such a file from scratch (copy/pasting library code) write solutions to the exercises yourself.
+
 What is special about the course is that its code is a programming course for `Lean`.
 
 When I worked with Doaitse Swierstra at the University of Utrecht, he once told me that, apart from sound proving 
@@ -99,7 +113,7 @@ specification.
 
 ## Programs versus Computations
 
-Usin its computing related unary type classes, the standard `Lean` library already enables
+Using its computing related unary type classes, the standard `Lean` library already enables
 "Computation Specification Based Programming". So why promoting "Program Specification Based Programming" in the first place?
 
 In short, informally, and very subjective, it is all a matter of taste (you may wish to give up reading the course).
