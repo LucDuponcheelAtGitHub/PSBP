@@ -589,7 +589,7 @@ instance
     [Applicative computation] :
     (identity :
       FromComputationValuedFunction computation α α)
-      = asProgram id := by
+      = asProgram id :=
   calc
     identity
         = asProgram id
@@ -603,7 +603,7 @@ theorem functional_sequential'
   (βfγ : β → γ) :
     (asProgram αfβ >=> asProgram βfγ :
       FromComputationValuedFunction computation α γ)
-      = asProgram (βfγ ∘ αfβ) := by
+      = asProgram (βfγ ∘ αfβ) :=
   calc
     (asProgram αfβ >=> asProgram βfγ :
       FromComputationValuedFunction computation α γ)

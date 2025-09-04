@@ -1570,7 +1570,7 @@ prove them for us.
 
 ### `Functional` theorems
 
-Theorem `functional_identity` below is proved by definition using `by calc` and
+Theorem `functional_identity` below is proved by definition using `calc` and
 `rfl`.
 
 ```lean
@@ -1579,7 +1579,7 @@ Theorem `functional_identity` below is proved by definition using `by calc` and
     [Applicative computation] :
     (identity :
       FromComputationValuedFunction computation α α)
-      = asProgram id := by
+      = asProgram id :=
   calc
     identity
         = asProgram id
@@ -1598,7 +1598,7 @@ theorem functional_sequential'
   (βfγ : β → γ) :
     (asProgram αfβ >=> asProgram βfγ :
       FromComputationValuedFunction computation α γ)
-      = asProgram (βfγ ∘ αfβ) := by
+      = asProgram (βfγ ∘ αfβ) :=
   calc
     (asProgram αfβ >=> asProgram βfγ :
       FromComputationValuedFunction computation α γ)
@@ -1727,7 +1727,7 @@ Theorem `functorial_sequential` uses `simp` to let `Lean` do the heavy lifting
     ((αpβ >-> βfγ) >-> γfδ :
       FromComputationValuedFunction computation α δ)
       = (αpβ >-> (γfδ ∘ βfγ)) := by
-        simp[andThenF, comp_map]
+        simp[andThenF, function_sequential]
 ```
 
 ### `Sequential` theorems
@@ -2231,7 +2231,7 @@ You may wish to also try
 #eval tasksFibonacci 24
 ```
 
-and have a look at how it keeps all threads of your OS busy (e.g. on Linux using htop).
+and have a look at how it keeps all threads of your OS busy (e.g. on `Linux` using `htop`).
 
 ## Positional Programming
 
@@ -2693,7 +2693,7 @@ class WithFailure
 export WithFailure (failureWith)
 ```
 
-### `instance WithFailure ε` (fail fast)
+### `instance WithFailure ε` (fast failure)
 
 `WithFailure ε` is implemented in terms of `FailureT`, which is defined in terms of `⊕`. Given an initial (argument)
 value, a program with failure may transform it to a final failure (result) value (at left) or a final succedd (result)
