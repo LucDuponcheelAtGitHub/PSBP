@@ -318,6 +318,8 @@ You can, for your explanation, ignore side effects for now. Of course you may wi
 
 ### Solution
 
+<details>
+
 Let's first deal with `Sequential`.
 
 `andThenP` can be explained as:
@@ -357,6 +359,8 @@ computation valued function `βfcγ` yields the same final outer computation val
 function that first transforms that first intermediate value using the intermediate computation valued function `αfcβ`,
 yielding an intermediate computation value that, when executing it, yields a second intermediate value, and then
 transforming that intermediate value using a final computation valued function `βfcγ`.
+
+</details>
 
 ### Programs and computations as components
 
@@ -708,6 +712,8 @@ separate `def`s.
 
 ### Solution (primitive programs)
 
+<details>
+
 Primitive functions
 
 ```lean
@@ -772,6 +778,8 @@ def multiply
     asProgram multiplyF
 ```
 
+</details>
+
 ### `fibonacci`
 
 Program `fibonacci` is defined as follows
@@ -800,6 +808,8 @@ Define `fibonacci'`, similar to `fibonacci`, but not using `else_`.
 
 ### Solution `fibonacci'`
 
+<details>
+
 ```lean
 unsafe def fibonacci'
     [Functional program]
@@ -813,6 +823,8 @@ unsafe def fibonacci'
         (minusTwo >=> fibonacci') >=>
         add
 ```
+
+</details>
 
 ### `factorial`
 
@@ -840,6 +852,8 @@ Define `factorial'`, similar to `factorial`, but not using `else_` and `in_`.
 
 ### Solution `factorial'`
 
+<details>
+
 ```lean
 unsafe def factorial'
     [Functional program]
@@ -852,6 +866,8 @@ unsafe def factorial'
       let_ (minusOne >=> factorial') $
         multiply
 ```
+
+</details>
 
 ### About `unsafe`
 
@@ -926,6 +942,8 @@ This exercises is an examples of a "getting the types right puzzle".
 
 ### Solution (`bothSeq` using `productSeq`)
 
+<details>
+
 Let
 
 ```lean
@@ -956,6 +974,8 @@ def bothSeq
 
 infixl:60 " <&> " => bothSeq
 ```
+
+</details>
 
 ### Exercise (`bothSeq'` using `onlyFirst` and `onlySecond`)
 
@@ -1012,6 +1032,8 @@ Recall that functions can be used as programs.
 
 ### Solution (`Functorial` using `Functional` and `Sequential`)
 
+<details>
+
 ```lean
 instance
     [Functional program]
@@ -1021,6 +1043,8 @@ instance
       program α β → (β → γ) → program α γ :=
         λ αpβ βfγ => αpβ >=> asProgram βfγ
 ```
+
+</details>
 
 ### Using `Functorial` with `Functional`, and `Creational`
 
@@ -1068,6 +1092,8 @@ Yet another "getting the types right puzzle".
 
 ### Solution (`productSeq'` using `let_`)
 
+<details>
+
 ```lean
 def productSeq'
     [Functional program]
@@ -1079,6 +1105,8 @@ def productSeq'
         let_ (first >=> αpγ) $
           asProgram λ ((_, β), γ) => (β, γ)
 ```
+
+</details>
 
 ### Exercise (`sum'` using `if_`)
 
@@ -1093,6 +1121,8 @@ Yet another "getting the types right puzzle".
 When matching with a value of type `γ ⊕ β` You may need to use `sorry` (think of it as undefined).
 
 ### Solution (`sum'` using `if_`)
+
+<details>
 
 ```lean
 def sum'
@@ -1115,6 +1145,8 @@ def sum'
             | Sum.inl _ => sorry
             | Sum.inr β => β) >=> βpα
 ```
+
+</details>
 
 ## Laws
 
@@ -1320,6 +1352,8 @@ class InCompleteExtraLawfulCreational
 
 ### Solution (extra `Creational` law)
 
+<details>
+
 ```lean
 class ExtraLawfulCreational
     [Functional program]
@@ -1333,6 +1367,8 @@ class ExtraLawfulCreational
     (αpβ &&& αpγ >=> (asProgram βfδ <&> asProgram γfε)) =
       ((αpβ >=> asProgram βfδ) &&& (αpγ >=> asProgram γfε))
 ```
+
+</details>
 
 ### Exercise (extra `Creational` law question)
 
@@ -1387,6 +1423,8 @@ class IncompleteLawfulCreationalLet
 
 ### Solution (extra `Creational` law for `let_`)
 
+<details>
+
 ```lean
 class LawfulCreationalLet
     [Functional program]
@@ -1400,6 +1438,8 @@ class LawfulCreationalLet
       (let_ αpβ (αaβpγ >=> γpδ))
 ```
 
+</details>
+
 ### Exercise (extra `Conditional` law for `if_`)
 
 *Exercise*
@@ -1409,6 +1449,8 @@ Define an extra `Conditional` law for `if_`, similar to the extra `Creational` l
 Is the law a valid one (open question)?
 
 ### Solution (extra `Conditional` law for `if_`)
+
+<details>
 
 ```lean
 class LawfulCreationalIf
@@ -1424,6 +1466,8 @@ class LawfulCreationalIf
     ((if_ αpb t_apβ f_apβ) >=> βpγ) =
       ((if_ αpb (t_apβ >=> βpγ) (f_apβ >=> βpγ)))
 ```
+
+</details>
 
 The order of the side effects performed by the programs involved matters.
 In this case it's sequential nature does not matter, therefore this law is likely to be a valid one for most
