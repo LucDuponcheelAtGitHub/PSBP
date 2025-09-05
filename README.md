@@ -1184,7 +1184,7 @@ def bothSeq'
 ```
 
 </details>
-e
+
 ### Types don't tell everything
 
 Consider the four basic members or derived deinitions below
