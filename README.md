@@ -743,7 +743,7 @@ def creational_αfγ {α β γ : Type} :
 
 Compare this with how to read `program α β → program α γ → program α γ`.
 
-Using functions instead of programs (as in `Creational`) the type above can be programmed as below
+Using functions instead of programs (as in `Sequential`) the type above can be programmed as below
 
 ```lean
 def sequential_αfγ {α β γ : Type} :
@@ -756,7 +756,9 @@ def sequential_αfγ {α β γ : Type} :
 - In the definition of `creational_αfγ`, the initial value of type `α` is used by `αaβfγ`.
 - In the definition of `sequential_αfγ`, the initial value of type `α` is not used by `βfγ`.
 
-Formalizing this difference using specifications `Creational` and `Sequential` is an essential aspect of gaining progressive insight into what programming is all about.
+Being able to formalize this difference using specifications, in this case `Creational` and `Sequential`, is an example
+of gaining progressive insight into what programming is all about. In this case into what "intermediate value creation"
+is all about.
 
 ### `def if_`
 
@@ -788,6 +790,28 @@ def else_ : α → α := id
 Think of `if_` as a library level keyword.
 
 `else_` is also a library level keyword that, depending on your taste, may make programs more readable.
+
+How to read `program α Bool → program α β → program α β → program α β`?
+
+If there are two ways to transform an initial value of type `α` to a final value of type `β` available, then, 
+depending on the final Boolean value the initial value is transformed to, one of both ways is chosen to transform the
+initial value to a final value, obtaining a way to transform an initial value of type `α` to a final value of type `β`.
+
+The statement above does not use the word "function" or the word "program".
+
+Using functions instead of programs (as in `Conditional`) the type above can be programmed as below
+
+```lean
+def αfβ :
+  (α → Bool) →
+  (α → β) →
+  (α → β) →
+  (α → β) :=
+    λ αfb t_afβ f_afβ α =>
+      if αfb α
+        then t_afβ α
+        else f_afβ α
+```
 
 ### Exercise (primitive programs)
 
@@ -1025,8 +1049,8 @@ The only difference between `fibonacci` and `parallelFibonacci` is that `fibonac
 
 ### About `$`
 
-You may have questions about the usage of the `$` operation. It is an operation with low precedence that avoids not
-using parentheses. Of course it is also possible to use parentheses as in
+You may have questions about the usage of the `$` operation. It is an operation with low precedence that avoids using
+parentheses (`(` and `)`). Of course it is also possible to use nested parentheses as in
 
 ```lean
 unsafe def fibonacci''
@@ -1044,7 +1068,7 @@ unsafe def fibonacci''
     )
 ```
 
-and
+and to use parentheses (in this example there is no need to nest them) as in
 
 ```lean
 unsafe def factorial''
@@ -1060,7 +1084,7 @@ unsafe def factorial''
     )
 ```
 
-I is all a matter of taste.
+It is all a matter of taste.
 
 ### Exercise (`bothSeq` using `productSeq`)
 
@@ -1069,7 +1093,7 @@ The basic member of `Creational` is `productSeq`. The basic member of `Parallel`
 
 *Exercise* :
 
-Define `bothSeq` (and it's infix notation `<&>`) using `productSeq` (having infix notation `&&&`). The type of `bothSeq`
+Define `bothSeq` (and infix `<&>`) using `productSeq` (infix `&&&`). The type of `bothSeq`
 is `program α γ → program β δ → program (α × β) (γ × δ)`.
 
 *Hint* :
@@ -1160,6 +1184,30 @@ def bothSeq'
 ```
 
 </details>
+e
+### Types don't tell everything
+
+Consider the four basic members or derived deinitions below
+
+- `productSeq {α β γ : Type} : program α β → program α γ → program α (β × γ)`
+- `bothSeq {α β γ : Type} : program α γ → program β δ → program (α × β) (γ × δ)`
+
+and
+
+- `productPar {α β γ : Type} : program α β → program α γ → program α (β × γ)`
+- `bothPar {α β γ δ : Type} : program α γ → program β δ → program (α × β) (γ × δ)`
+
+The types of `productSeq` and `productPar` resp. `bothSeq` and `bothPar` are the same.
+
+There is a choice to be made now.
+
+1. Should we treat the difference between the `Seq` and `Par` version as a specification concern?
+
+or
+
+2. Should we treat the difference between the `Seq` and `Par` version as an implementation concern?
+
+`PSBP` goes for the former, if only because the order in which side effects are ferformed matter,
 
 ### Exercise (`Functorial` using `Functional` and `Sequential`)
 
@@ -1213,20 +1261,17 @@ def twiceMinusOneSequential
     minusOne &&& minusOne >=> add
 ```
 
-`twiceMinusOneSequential` uses the full power of `Sequential` while `twiceMinusOneFunctorial` uses the less powerful
-`Functorial`. Using `Sequential` is, in this case, an unnecessary overkill because the addition that is used in both
-cases is effectfree.
+`twiceMinusOneSequential` uses the more powerful of `Sequential` while `twiceMinusOneFunctorial` uses the less powerful
+`Functorial`. Using `Sequential` is, in this case, an unnecessary overkill because all programs involved are effectfree.
 
-That being said, you may argue that what you have read so far is also an unnecessary overkill because, after all, I only
-showed (effectfree) functions. But think of replacing `minusOne` and/ or `minusTwo` by an effectful program. Having more
-implementation and corresponding materialization flexibility when dealing with side effects can really be useful. A
-standard example is more flexible error handling when processing a submitted web form. Another example is error correction when parsing a document.
+That being said, you may argue that what you have read so far is also an unnecessary overkill because, after all, so far, I only defined effectfree programs. But think of replacing `minusOne` and/ or `minusTwo` by an effectful program
+Having more implementation and corresponding materialization flexibility when dealing with side effects can really be useful. A standard example is more flexible error handling when processing a submitted web form. Another example is error correction when parsing a document.
 
 ### Exercise (`productSeq'` using `let_`)
 
 *Exercise* :
 
-Define `productSeq'` using `let_`.
+Define `productSeq'`, an alternative version of `productSeq`, using `let_`.
 
 *Hint* :
 
@@ -1254,7 +1299,7 @@ def productSeq'
 
 *Exercise* :
 
-Define `sum'` using `if_`.
+Define `sum'`, an alternative version of `sum`, using `if_`.
 
 *Hint* :
 

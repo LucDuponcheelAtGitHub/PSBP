@@ -112,6 +112,16 @@ def sequential_αfγ {α β γ : Type} :
 
 def else_ : α → α := id
 
+def αfβ :
+  (α → Bool) →
+  (α → β) →
+  (α → β) →
+  (α → β) :=
+    λ αfb t_afβ f_afβ α =>
+      if αfb α
+        then t_afβ α
+        else f_afβ α
+
 -- exercise
 def isZeroF: Nat → Bool :=
   λ n => n == 0
@@ -287,7 +297,7 @@ def second
   program (α × β) β :=
     asProgram λ (_, β) => β
 
-def bothSeq
+def bothSeq {α β γ : Type}
     [Functional program]
     [Sequential program]
     [Creational program] :
