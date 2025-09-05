@@ -45,6 +45,16 @@ export Conditional (sum)
 
 infixl:55 " ||| " => sum
 
+def functionAction {α β γ : Type}
+    [Functorial program] :
+  (β → γ) → (program α β → program α γ) :=
+    λ βfγ => (. >-> βfγ)
+
+def programAction
+    [Sequential program] :
+  program β γ → (program α β → program α γ) :=
+    λ βpγ => (. >=> βpγ)
+
 class Parallel (program : Type → Type → Type) where
   bothPar {α β γ δ : Type} :
   program α γ → program β δ → program (α × β) (γ × δ)
@@ -1065,7 +1075,7 @@ unsafe def tasksFibonacci :=
 
 #eval tasksFibonacci 10
 
-#eval tasksFibonacci 24
+-- #eval tasksFibonacci 24
 
 def twoF : Nat → Nat := λ _ => 2
 

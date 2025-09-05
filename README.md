@@ -59,7 +59,7 @@ that have not been defined. `Lean` would complain if that would be the case (and
 Let's end this section with a, somewhat offensive (I am sorry), statement that, hopefully, motivates you to keep on
 reading the course : if `Lean` can understand the course then you should be able to understand it as well.
 
-## `PSBP`
+## `PSBP` (optional)
 
 `PSBP` is a pointfree effectful functional programming library, written using the `Lean` programming language.
 
@@ -116,7 +116,7 @@ Agreed, specifications and descriptions are not really the same thing. Specifica
 about, while descriptions describe what things are all about. As such a descriptions is a (special kind of)
 implementation.
 
-## Programs versus Computations
+## Programs versus Computations (optional)
 
 The computing related unary type constructor classes of the standard `Lean` library already enable
 "Computation Specification Based Programming". 
@@ -497,9 +497,9 @@ infixl:50 " >-> " => andThenF
 ### `class Sequential`
 
 Programs can be sequentially combined. Sequentially combining programs can be seen as a second program acting upon a
-first program. The difference with `Functorial` is that the second program may be effectful. Effects are accumulated
-from left to right. Moreover, effects of the second program can depend on the final value yielded by the first program.
-We define programs that are sequentially combined in a formal way by defining`class Sequential`.
+first program. The difference with `Functorial` is that the second program may be effectful. Side effects are performed
+from left to right. Moreover, side effects of the second program can depend on the final value yielded by the first
+program. We define programs that are sequentially combined in a formal way by defining`class Sequential`.
 
 ```lean
 class Sequential
@@ -524,8 +524,8 @@ infixl:50 " >=> " => andThenP
 
 ### `class Creational`
 
-Programs can be combined to, sequentially, create product values. Their effects are accumulated from left to right. We
-define programs that, sequentially, produce product values in a formal way by defining `class Creational`.
+Programs can be combined to, sequentially, create product values. Their side effects are performed from left to right.
+We define programs that, sequentially, produce product values in a formal way by defining `class Creational`.
 
 ```lean
 class Creational
@@ -554,8 +554,8 @@ infixl:60 " &&& " => productSeq
 
 ### `class Conditional`
 
-Programs can be combined to consume sum values. Only the left one and its effects or the right one and its effects is
-used. We define programs that consume sum values in a formal way by defining `class Conditional`.
+Programs can be combined to consume sum values. Only the left one and its side effects or the right one and its side 
+effects is used. We define programs that consume sum values in a formal way by defining `class Conditional`.
 
 ```lean
 class Conditional
@@ -583,11 +583,62 @@ infixl:55 " ||| " => sum
 
 `sum` also has infix notation `|||`.
 
+### Mathematics related remark
+
+Let's, from a mathematics point of view, have a look at the members of the classes defined so far.
+
+Let's start with 
+
+- `productSeq : program α β → program α γ → program α (β × γ)`
+and
+- `sum : program γ α → program β α → program (γ ⊕ β) α`
+
+Somehow, polynomials, combinations of products (`×`) and sums (`⊕`), are part of the mathematical foundation of
+programming. 
+
+Let's continue with
+
+- `asProgram : (α → β) → program α β`
+
+Somehow, exponentials (`→`) are part of the mathematical foundation of programming.
+
+Let's end with
+
+- `andThenF : program α β → (β → γ) → program α γ`
+and
+- `andThenP : program α β → program β γ → program α γ`
+
+and correponding derived definitions
+
+```lean
+def functionAction {α β γ : Type}
+    [Functorial program] :
+  (β → γ) → (program α β → program α γ) :=
+    λ βfγ => (. >-> βfγ)
+```
+
+and
+
+```lean
+def programAction
+    [Sequential program] :
+  program β γ → (program α β → program α γ) :=
+    λ βpγ => (. >=> βpγ)
+```
+
+Somehow, actions, transforming programs to programs, are part of the mathematical foundation of programming.
+
+### Programming related remark
+
+Programming is, on the one hand, about transforming values to values and, on the other hand, about performing side
+effects. The members defined so far are compatible with performing side effects as far as not having an impact on the
+order in which side effects are performed.
+
 ### `class Parallel`
 
-Programs can be combined to, in parallel, transform initial product values to final product values. Their effects can
-either be accumulated from left to right or be accumulated from right to left. We define programs that, in parallel,
-transform initial product values to final product values in a formal way by defining `class Parallel`.
+Programs can be combined to, in parallel, to transform initial product values to final product values. The order in which values are transformed is not guarantied. More important, also the order in which their side effects are performed
+is not guarantied. We define programs that, in parallel, transform initial product values to final product values in a
+formal way by defining `class Parallel`.
 
 ```lean
 class Parallel (program : Type → Type → Type) where
@@ -612,37 +663,6 @@ infixl:60 " |&| " => bothPar
 ```
 
 `bothPar` also has infix notation `|&|`.
-
-### Mathematical remark
-
-Let's, from a mathematics point of view, have a look at the types of the members of the classes defined so far.
-
-Let's start with 
-
-- `program α β → program α γ → program α (β × γ)`
-and
-- `program γ α → program β α → program (γ ⊕ β) α`
-
-Programs can, somehow, deal with products (`×`) and sums (`⊕`). 
-
-Combined, they can, somehow, deal with polynomials.
-
-Let's continue with
-
-- `(α → β) → program α β`
-
-Programs can, somehow, deal with exponentials (`→`).
-
-(the number of functions from a finite set `M` with `m` elements to a finite set `N` with `n` elements is `n^m`) 
-
-Let's end with
-
-- `program α β → program β γ → program α γ`
-and
-- `program α β → (β → γ) → program α γ`
-
-Programs can, somehow, deal with actions. More precisely monoid actions because both `program β γ` and ` → γ` are
-somehow, monoids
 
 ### Writing programs
 
@@ -950,8 +970,8 @@ unsafe def factorial'
 
 The `unsafe` keyword is used because the definitions above do not type check without them. Lean cannot prove that
 `fibonacci` and `factorial` can be used in a safe way. Note that they are program specifications. They need to be
-materialized before they can be used. Much in the same way, specifications of effects are descriptions of side-effects.
-They need to be materialized to perform side effects. 
+materialized before they can be used. Much in the same way, specifications of side effects are descriptions of
+side effects. They need to be materialized to be performed. 
 
 It is instructive to compare this with a painting of something going wrong. It is safe to hang the painting on your   
 wall. Nothing will go wrong.
@@ -1199,9 +1219,8 @@ cases is effectfree.
 
 That being said, you may argue that what you have read so far is also an unnecessary overkill because, after all, I only
 showed (effectfree) functions. But think of replacing `minusOne` and/ or `minusTwo` by an effectful program. Having more
-implementation and corresponding materialization flexibility when dealing with effects can really be useful. A standard
-example is more flexible error handling when processing a submitted web form. Another example is error correction when
-parsing a document.
+implementation and corresponding materialization flexibility when dealing with side effects can really be useful. A
+standard example is more flexible error handling when processing a submitted web form. Another example is error correction when parsing a document.
 
 ### Exercise (`productSeq'` using `let_`)
 
