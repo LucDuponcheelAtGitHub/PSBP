@@ -16,9 +16,9 @@ Every document uses its naming conventions. Below are the two most relevant ones
 - The word "program" has a specific meaing : it refers to`program`, intentionally shown in typewriter font, the name of
 the parameter of various programming related `Lean` binary type constructor classes. 
 
-By the way, the title of this document uses the naming conventions above.
+The title of this document uses the naming conventions above.
 
-Anyway, I hope that the naming conventions above do not lead to any confusion.
+I hope that the naming conventions above do not lead to any confusion.
 
 ## About
 
@@ -29,34 +29,34 @@ It is not a `Lean` programming course.
 The course is especially useful for mathematicians and/or computer scientists, researchers as well as students, who are
 interested in mathematical foundations of programming.
 
-You may wish to skip section 
-[Programs versus Computations](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#programs-versus-computations)
-and section
-[`PSBP`](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#psbp) before section
-[The `PSBP` Library](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#the-psbp-library), the section
-where the programming course starts.
+You may wish to skip the introduction sections 
+[`PSBP`](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#psbp)
+and
+[Programs versus Computations](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#programs-versus-computations) that come before section
+[The `PSBP` Library](https://github.com/LucDuponcheelAtGitHub/PSBP?tab=readme-ov-file#the-psbp-library),
+the section where the programming course starts.
 
 The repository contains a file
 [All.lean](https://github.com/LucDuponcheelAtGitHub/PSBP/blob/master/PSBP/All.lean) containing all the code of the
 `PSBP` library and all the solutions to the exercises of the course.
 
-You may wish to produce such a file from scratch, copy/pasting library code and writing solutions to exercises.
+You may wish to produce such a file from scratch, copy/pasting library code and writing solutions to exercises yourself.
 
 What is special about the course is that its code is a programming course for `Lean` itself!
 
 When I worked with Doaitse Swierstra at the University of Utrecht, he once told me that, apart from sound proving 
 techniques like "proof by induction", there is also this unsound proving technique "proof by intimidation". If no
-student complains about the correctness of a proof, then the proof is correct. Of course, Doaitse did not apply this
+student complains about the correctness of a proof, then a proof is correct. Of course, Doaitse did not apply this
 technique when teaching. `Lean` would be this very demanding student asking you for more and more proof details before
-willing to accept the correctness of the proof. But `Lean` would also be this very helpful student that would be able to
+willing to accept the correctness of a proof. But `Lean` would also be this very helpful student that would be able to
 infer proof details for you.
 
 The first sections of the course do not always define all concepts they use. Please keep on reading. All concepts will,
 eventually, be defined. Starting from section "The `PSBP` library", the course is self-contained and requires, at least
 in theory, no previous knowledge (apart from some `Lean` knowledge). In particular, the course does not use concepts
-that have not been defined. `Lean` would complain if that would be the case (and you sould complain as well).
+that have not been defined. `Lean` would complain if that would be the case (and you should complain as well).
 
-So let's end this section with a, somewhat offensive (I am sorry), statement that, hopefully, motivates you to keep on
+Let's end this section with a, somewhat offensive (I am sorry), statement that, hopefully, motivates you to keep on
 reading the course : if `Lean` can understand the course then you should be able to understand it as well.
 
 ## `PSBP`
@@ -65,16 +65,16 @@ reading the course : if `Lean` can understand the course then you should be able
 
 Apart from "functional programming" the statement above uses two important adjectives and one important noun
 
-- adjective "pointfree" (as opposed to "pointful" in this course)
-- adjectuve "effectful" (as opposed to "effectfree" in this course)
+- adjective "pointfree" (as opposed to "pointful")
+- adjectuve "effectful" (as opposed to "effectfree")
 
 The adjectives above will be explained later in the course.
 
-- noun "library" (as opposed to "language" in this course)
+- noun "library" (as opposed to "language")
 
 Hopefully, the nouns above do not need explanation.
 
-In what follows `Lean` will not often explictly be mentioned. It will often implicitly be taken for granted.
+In what follows `Lean` will not often explictly be mentioned any more.
 
 `PSBP` can be seen as a programming DSL, a Domain Specific Language for the programming domain.
 
@@ -82,7 +82,7 @@ In what follows `Lean` will not often explictly be mentioned. It will often impl
 `Creational`, `Sequential`, `Conditional` and `Parallel`. `PSBP` code, consistently, names their binary type constructor
 parameter `program`.
 
-The `PSPB` type constructor classes are specifications, also called interfaces in the programming world. They have members that declare basic program specifications and basic program specification combinators to combine program specifications to composite program specifications. Derived program specifications and derived program specification combinators can then be defined in terms of (declared or defined) program specifications and (declared or defined program specification combinators. As such program specifications are components of a component system.
+The `PSPB` type constructor classes are specifications, also called interfaces in the programming world. They have members that declare basic program specifications and basic program specification combinators to combine program specifications to composite program specifications. Derived program specifications and derived program specification combinators can then be defined in terms of (declared or defined) program specifications and (declared or defined) program specification combinators. As such program specifications are components of a component system.
 
 The `Lean` standard library has a variety of computing related unary type constructor classes, among others `Functor`,
 `Applicative` and `Monad`. `PSBP` code consistently names their unary type constructor parameter `computation`.
@@ -93,9 +93,9 @@ components of a component system.
 By now you may be asking why I used "program specification" resp. "computation specification" instead of simply using
 "program" resp. "computation". First of all, because program specifications resp. computation specifications are
 specifications. Type constructor class instances, also called implementations in the programming world, of the various
-type constructor classes, in terms of whose members program specifications resp. computation specifications are defined,
+type constructor classes, in terms of whose members program specifications resp. computation specifications are written,
 need to be given to materialize program specifications resp. computation specifications. It are those materializations
-that, in the course, are called programs resp. computations, now, intentionally, not written in typewriter font.
+that are called programs resp. computations, now, intentionally, not written in typewriter font.
 
 In what follows, by abuse of language, I will often also use the word "program" (recall, a materialization of a program
 specification corresponding to instances of programming related type constructor classes) instead of
@@ -109,14 +109,19 @@ It is instructive to compare this abuse of language with the title,
 [Ceci n'est pas une pipe](https://en.wikipedia.org/wiki/The_Treachery_of_Images),
 of the painting of René Magritte. The painting itself is, of course, not a pipe, it is a description of a pipe. yet,
 when you look at the painting, you might think of it as being a pipe. Much in the same way, when an architect is showing
-you the specification of a house, for example as a 3D animation, a (special kind of) description, communication, by
-abuse of language, happens using words like kitchen resp. bathroom instead of kitchen specification resp. bathroom
-specification.
+you the description of a house, for example as a 3D animation, communication, by abuse of language, happens using words
+like kitchen resp. bathroom instead of kitchen description resp. bathroom desctiption.
+
+Agreed, specifications and descriptions are not really the same thing. Specifications specify what things should be all
+about, while descriptions describe what things are all about. As such a descriptions is a (special kind of)
+implementation.
 
 ## Programs versus Computations
 
-Using its computing related unary type constructor classes, the standard `Lean` library already enables
-"Computation Specification Based Programming". So why promoting "Program Specification Based Programming" in the first place?
+The computing related unary type constructor classes of the standard `Lean` library already enable
+"Computation Specification Based Programming". 
+
+So why promoting the `PSBP` library enabling "Program Specification Based Programming"?
 
 In short, informally, and very subjective, it is all a matter of taste (you may wish to give up reading the course).
 
@@ -126,8 +131,8 @@ I'll explain this in terms of my personal history as mathematician and programme
 
 I am a retired mathematician and programmer.
 
-Mathematics is generally agreed upon to be useful to understand the reality we are all part of. For example to
-understand problem domains we are confronted with.
+Mathematics is generally agreed upon to be useful to understand the reality we are part of. For example to understand 
+(concepts of) problem domains we are confronted with.
 
 Bridge building engineers may benefit form studying appropriate mathematics to understand what bridge requirements are
 all about. Vehicle building engineers may benefit form studying appropriate mathematics to understand what vehicle
@@ -154,8 +159,8 @@ Belgium, mathematics could mainly be done as a backyard ritual. In order to earn
 a programmer. Being addicted to research, I also decided to do computer science research as a late at night hobby
 (typically starting at 9PM).
 
-I studied function level programming systems, supported by the pointfree effectfree functional programming language
-[`FP`](https://en.wikipedia.org/wiki/FP_%28programming_language%29).
+I studied function level programming systems, supported, for example, by the pointfree effectfree functional programming
+language [`FP`](https://en.wikipedia.org/wiki/FP_%28programming_language%29).
 
 I published a paper
 [Acceptable functional programming systems](https://link.springer.com/article/10.1007/BF00268076)
@@ -177,16 +182,16 @@ I published the following papers
 
 1. [Composing monads](https://web.cecs.pdx.edu/~mpj/pubs/RR-1004.pdf),
 2. [On the expressive power of constructor classes](https://link.springer.com/chapter/10.1007/978-1-4471-3573-9_3),
-3. [Deterministic error-correcting combinator parsers](https://www.cs.tufts.edu/~nr/cs257/archive/doaitse-swierstra/error-correcting.pdf), and
+3. [Deterministic error-correcting combinator parsers](https://www.cs.tufts.edu/~nr/cs257/archive/doaitse-swierstra/error-correcting.pdf),
 4. [Using catamorphisms, subtypes and monad transformers for writing modular functional interpeters](https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=1cdebf7b88435a38156f62df1a7189b6d8ca3fe3).
 
 The first paper was written, as a late night hobby, together with Mark P. Jones, the author of `Gofer`. What is
 special about that paper is that we had never physically met each other. Those were the early days of the internet. We
 wrote the paper (and the code that came with it) together by sending emails with attachments to each other. In fact, it
 turned out to be an efficient way to work together. While one of us was sleeping (in Europe resp. the USA) the other one
-was working (in the USA resp. Europe). The paper also contained equational proofs. Those days, they were simply encoded
-as lists of expressions representing equational proof steps. `Gofer` did not have a formal proof correctness reviewing
-mechanism like `Lean` has, but, type correctness provided at least some formal proof correctness confidence.
+was working (in the USA resp. Europe). The paper contained equational proofs. Those days, they were simply encoded as 
+lists of expressions representing equational proof steps. `Gofer` did not have a formal proof correctness reviewing
+mechanism like `Lean` has, but, type correctness provided at least some degree of formal proof correctness confidence.
 
 The other papers were written while I was working, for two years, at the University of Utrecht. That was a unique
 experience for me for which I am, forever, greatful to Doaitse Swierstrsa. Erik Meijer, those years also working at the
@@ -202,10 +207,10 @@ The third paper was written together with Doaitse Swierstra. It turned out to be
 constructor classes,
 [arrows](https://link.springer.com/chapter/10.1007/11546382_2) and
 [applicatives](https://www.researchgate.net/publication/215446169_Applicative_Programming_with_Effects),
-based upon mathematical foundations: Arrow based libraries are pointfree effectful functional programming libraries.
-Applicative based libraries are pointful effectful functional programming libraries. The relationship between them was
-explored in
-[Arrows and Applicatives](https://homepages.inf.ed.ac.uk/wadler/papers/arrows-and-idioms/arrows-and-idioms.pdf).
+based upon mathematical foundations. Arrow based libraries are pointfree effectful functional programming libraries.
+Applicative based libraries are pointful effectful functional programming libraries. The relationship between the
+mathematical foundations was explored in
+[Monads, Arrows and Applicatives](https://homepages.inf.ed.ac.uk/wadler/papers/arrows-and-idioms/arrows-and-idioms.pdf).
 
 The fourth paper was based on
 [Monad transformers and modular interpreters](https://dl.acm.org/doi/pdf/10.1145/199448.199528).
@@ -217,22 +222,23 @@ All this brings me to my progressive insight that motivates me to do this `PSBP`
 What are the most appropriate mathematical foundations and corresponding type classes for effectful functional
 programming? The more powerful they are the less implementation flexibility they have. For example monadic parsers
 can parse context sensitive grammars, while applicative parsers cannot, but, applicative parsers allow for more flexible
-error handling than monadic parsers when parsing context unsensitive grammars.
+error handling than monadic parsers when parsing context free grammars.
 
 Programming is also about elegance and programming libraries are also about ease of use. Pointfree programming is more elegant than pointful programming and pointfree programming libraries are easier of use than pointful programming libraries. Of course this is a matter of taste.
 
 The `Applicative` specification and the `Monad` specification specify computation capabilities. Think of computations as
 effectful expressions. They are operational artifacts. They do not really have a meaning in the mathematical sense and
 cannot be given a meaningful name. How, for example, would you name expression `x * x` in `λ x => x * x` using
-meaningful names? Just like expressions are evaluated to yield a value, computations, are executed to, somehow, yield a
+meaningful names? Just like expressions are evaluated to yield a value, computations, are, somehow, executed to yield a
 value, but, somehow executing computations may also perform side effects along the way. The "somehow" in the previous
 sentence is important, because it depends on the materialization corresponding to instances of the type constructor
-classes in terms of whose members the computations (recall, more precisely, computation specificatons) have been written.
+classes in terms of whose members the computations (recall, more precisely, computation specificatons) have been
+written.
 
 The programming related specifications of the course specify, not surprisingly, program capabilities. Think of programs
 as effectful functions. They are denotational artifacts. They do have a meaning in the mathematical sense and can be
 given a meaningful name. For example `λ x => x * x` can be given the meaningful name `square`. Of course functions and
-programs can also be looked at as operational artifacts. Just like functions, programs, by somehow running them, transform an initial value to a final value, but, somehow running them may perform side effects along the way. The "somehow" in the previous sentence is important, because it depends on the materialization corresponding to instances of the type constructor classes in terms of whose members the programs (recall, more precisely, program specificaton) have been written.
+programs can also be looked at as operational artifacts. Just like functions, programs, by, somehow, running them, transform an initial value to a final value, but, somehow running them may perform side effects along the way. The "somehow" in the previous sentence is important, because it depends on the materialization corresponding to instances of the type constructor classes in terms of whose members the programs (recall, more precisely, program specificaton) have been written.
 
 By the way, a value can be an atomic-value or a composite-value, repesented as a (nested) tuple. As such values are
 components of a component system.
@@ -395,10 +401,10 @@ programming. It is is useful for writing sequential recipe-like programs, where,
 (often a composite-value), intermediate values (typically basic-values) are created, and, together with the initial
 value, are passed as a composite value to the next step of the recipe-like program, until a final value is yielded. The
 initial value and intermediate values are accessed positionally. The creation of the intermediate values can involve
-general programs. A sequential recipe-like program glues programs together, similar to an operating system scripting
-language gluing operating system executables together.
+general programs. A sequential recipe-like program glues programs together. For effectful programs, the order in which
+programs are glued together really matters.
 
-For effectful programs, the order in which they are glued together really matters.
+It is instructive to think about gluing together programs as being similar to gluing together executables using an operating system script, for example, a `bash` script of a `Linux` operating system.
 
 ## The `PSBP` library
 
@@ -406,11 +412,16 @@ The `PSBP` library type constructor classes are binary type constructor classes.
 
 Recall that I simply called them classes.
 
-I use few naming and showing conventions
+I use few naming conventions
 
 - Functions of type `α → β` are called `αfβ`.
 
 - Programs of type `program α β` are called `αpβ`
+
+Much in the same way I will also use names like `αaβ`, where the `a` stands for "and", and names like `αoβ`, where the
+`o` stands for "or".
+
+I use few showing conventions
 
 - Functions of type `α → β` are shown as
 
@@ -428,9 +439,10 @@ I use few naming and showing conventions
         ╰───╯
 ```
 
-Much in the same way I also use names like `αaβ`, where the `a` stands for "and", and names like `αoβ`, where the `o` stands for "or".
-
 By abuse of language, the specification requirements of the `PSBP` classes are written as statements.
+
+It is instructive to compare this with using a statement like "a train can drive form A to B" instead of using the
+requirement "a train should be able to drive from A to B".
 
 ### `class Functional`
 
@@ -573,9 +585,9 @@ infixl:55 " ||| " => sum
 
 ### `class Parallel`
 
-Programs can be combined to, in parallel, create product values. Their effects are accumulated from left to right or
-from right to left. We define programs that, in parallel, produce product values in a formal way by defining
-`class Parallel`.
+Programs can be combined to, in parallel, transform initial product values to final product values. Their effects can
+either be accumulated from left to right or be accumulated from right to left. We define programs that, in parallel,
+transform initial product values to final product values in a formal way by defining `class Parallel`.
 
 ```lean
 class Parallel (program : Type → Type → Type) where
@@ -659,6 +671,34 @@ def let_
 Think of `let_` as a library level keyword.
 
 `in_` is also a library level keyword that, depending on your taste, may make programs more readable.
+
+How to read `program α β → program (α × β) γ → program α γ`?
+
+If an initial value of type `α` can be transformed to a final value of type `β`, and, if that final value of type `β`
+can, as an intermediate value of type `β`, together with the initial value of type `α` be transformed to a final value
+of type `γ`, then an initial value of type `α` can be transformed to a final value of type `γ`.
+
+Using functions instead of programs (as in `Creational`) the statement above can be programmed as below
+
+```lean
+def αfγ {α β γ : Type} :
+    (α → β) → ((α × β) → γ) → (α → γ) :=
+  λ αfβ αaβfγ α =>
+    let β := αfβ α
+    αaβfγ (α, β)
+```
+
+Compared with 
+
+```lean
+def αfγ {α β γ : Type} :
+    (α → β) → (β → γ) → (α → γ) :=
+  λ αfβ βfγ α =>
+    let β := αfβ 
+    βfγ β
+```
+
+using functions instead of programs (as in `Sequential`), where the initial value of type `α` is not used by `βfγ`, the initial value of type `α` is also used by `αaβfγ`.
 
 ### `def if_`
 

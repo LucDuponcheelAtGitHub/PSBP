@@ -1023,11 +1023,11 @@ def materializeTasks {α β : Type} :
     λ ⟨αftβ⟩ α => (αftβ α).get
 
 unsafe def tasksFibonacci :=
-  materializeTasks fibonacci
+  materializeTasks parallelFibonacci
 
 #eval tasksFibonacci 10
 
--- #eval tasksFibonacci 24
+#eval tasksFibonacci 24
 
 def twoF : Nat → Nat := λ _ => 2
 
