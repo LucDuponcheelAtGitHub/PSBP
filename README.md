@@ -613,6 +613,37 @@ infixl:60 " |&| " => bothPar
 
 `bothPar` also has infix notation `|&|`.
 
+### Mathematical remark
+
+Let's, from a mathematics point of view, have a look at the types of the members of the classes defined so far.
+
+Let's start with 
+
+- `program α β → program α γ → program α (β × γ)`
+and
+- `program γ α → program β α → program (γ ⊕ β) α`
+
+Programs can, somehow, deal with products (`×`) and sums (`⊕`). 
+
+Combined, they can, somehow, deal with polynomials.
+
+Let's continue with
+
+- `(α → β) → program α β`
+
+Programs can, somehow, deal with exponentials (`→`).
+
+(the number of functions from a finite set `M` with `m` elements to a finite set `N` with `n` elements is `n^m`) 
+
+Let's end with
+
+- `program α β → program β γ → program α γ`
+and
+- `program α β → (β → γ) → program α γ`
+
+Programs can, somehow, deal with actions. More precisely monoid actions because both `program β γ` and ` → γ` are
+somehow, monoids
+
 ### Writing programs
 
 Programs are written in terms of members of classes like the ones defined so far. The class members are not defined,
@@ -678,27 +709,34 @@ If an initial value of type `α` can be transformed to a final value of type `β
 can, as an intermediate value of type `β`, together with the initial value of type `α` be transformed to a final value
 of type `γ`, then an initial value of type `α` can be transformed to a final value of type `γ`.
 
-Using functions instead of programs (as in `Creational`) the statement above can be programmed as below
+The statement above does not use the word "function" or the word "program".
+
+Using functions instead of programs (as in `Creational`) the type above can be programmed as below
 
 ```lean
-def αfγ {α β γ : Type} :
+def creational_αfγ {α β γ : Type} :
     (α → β) → ((α × β) → γ) → (α → γ) :=
   λ αfβ αaβfγ α =>
     let β := αfβ α
     αaβfγ (α, β)
 ```
 
-Compared with 
+Compare this with how to read `program α β → program α γ → program α γ`.
+
+Using functions instead of programs (as in `Creational`) the type above can be programmed as below
 
 ```lean
-def αfγ {α β γ : Type} :
+def sequential_αfγ {α β γ : Type} :
     (α → β) → (β → γ) → (α → γ) :=
   λ αfβ βfγ α =>
-    let β := αfβ 
+    let β := αfβ α
     βfγ β
 ```
 
-using functions instead of programs (as in `Sequential`), where the initial value of type `α` is not used by `βfγ`, the initial value of type `α` is also used by `αaβfγ`.
+- In the definition of `creational_αfγ`, the initial value of type `α` is used by `αaβfγ`.
+- In the definition of `sequential_αfγ`, the initial value of type `α` is not used by `βfγ`.
+
+Formalizing this difference using specifications `Creational` and `Sequential` is an essential aspect of gaining progressive insight into what programming is all about.
 
 ### `def if_`
 
@@ -963,6 +1001,46 @@ unsafe def parallelFibonacci
 
 The only difference between `fibonacci` and `parallelFibonacci` is that `fibonacci` uses `&&&` while
 `parallelFibonacci` uses `&|&`.
+
+
+### About `$`
+
+You may have questions about the usage of the `$` operation. It is an operation with low precedence that avoids not
+using parentheses. Of course it is also possible to use parentheses as in
+
+```lean
+unsafe def fibonacci''
+    [Functional program]
+    [Sequential program]
+    [Creational program]
+    [Conditional program] :
+  program Nat Nat :=
+    if_ isZero one (
+      if_ isOne one (
+        (minusOne >=> fibonacci') &&&
+        (minusTwo >=> fibonacci') >=>
+        add
+      )
+    )
+```
+
+and
+
+```lean
+unsafe def factorial''
+    [Functional program]
+    [Sequential program]
+    [Creational program]
+    [Sequential program]
+    [Conditional program] :
+  program Nat Nat :=
+    if_ isZero one (
+      let_ (minusOne >=> factorial')
+        multiply
+    )
+```
+
+I is all a matter of taste.
 
 ### Exercise (`bothSeq` using `productSeq`)
 

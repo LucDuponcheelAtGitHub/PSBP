@@ -69,6 +69,18 @@ def let_
 
  def in_ : α → α := id
 
+def creational_αfγ {α β γ : Type} :
+    (α → β) → ((α × β) → γ) → (α → γ) :=
+  λ αfβ αaβfγ α =>
+    let β := αfβ α
+    αaβfγ (α, β)
+
+def sequential_αfγ {α β γ : Type} :
+    (α → β) → (β → γ) → (α → γ) :=
+  λ αfβ βfγ α =>
+    let β := αfβ α
+    βfγ β
+
  def if_
     [Functional program]
     [Sequential program]
@@ -227,6 +239,32 @@ unsafe def parallelFibonacci
         (minusOne >=> parallelFibonacci) &|&
         (minusTwo >=> parallelFibonacci) >=>
         add
+
+unsafe def fibonacci''
+    [Functional program]
+    [Sequential program]
+    [Creational program]
+    [Conditional program] :
+  program Nat Nat :=
+    if_ isZero one (
+      if_ isOne one (
+        (minusOne >=> fibonacci') &&&
+        (minusTwo >=> fibonacci') >=>
+        add
+      )
+    )
+
+unsafe def factorial''
+    [Functional program]
+    [Sequential program]
+    [Creational program]
+    [Sequential program]
+    [Conditional program] :
+  program Nat Nat :=
+    if_ isZero one (
+      let_ (minusOne >=> factorial')
+        multiply
+    )
 
 -- exercise
 def first
