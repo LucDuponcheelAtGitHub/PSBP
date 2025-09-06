@@ -9,9 +9,9 @@ instance : Monad Task where
 instance : MonadAsync Task where
   async := Task.spawn
 
-abbrev TaskProgram :=
+abbrev TasksSpawningProgram :=
   FromComputationValuedFunction Task
 
-def materializeTask {α β : Type} :
-  TaskProgram α β → (α → β) :=
+def materializeTasksSpawning {α β : Type} :
+  TasksSpawningProgram α β → (α → β) :=
     λ ⟨αftβ⟩ α => (αftβ α).get

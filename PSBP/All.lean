@@ -123,26 +123,20 @@ def αfβ :
         else f_afβ α
 
 -- exercise
-def isZeroF: Nat → Bool :=
-  λ n => n == 0
+def isZeroF: Nat → Bool := (. == 0)
 
-def isOneF : Nat → Bool :=
-  λ n => n == 1
+def isOneF : Nat → Bool := (. == 1)
 
-def oneF : Nat → Nat :=
-  λ _ => 1
+def oneF : Nat → Nat := λ _ => 1
 
-def minusOneF : Nat → Nat :=
-  λ n => n - 1
+def minusOneF : Nat → Nat := λ n => n - 1
 
-def minusTwoF : Nat → Nat :=
-  λ n => n - 2
+def minusTwoF : Nat → Nat := λ n => n - 2
 
 def addF : Nat × Nat → Nat :=
   λ ⟨n, m⟩ => n + m
 
-def multiplyF : Nat × Nat → Nat :=
-  λ ⟨n, m⟩ => n * m
+def multiplyF : Nat × Nat → Nat := λ ⟨n, m⟩ => n * m
 
 def isZero
     [Functional program] :
@@ -505,6 +499,16 @@ class LawfulConditional
       βpα
 
 -- exercise
+class AlternativeLawfulFunctorial
+    [Functorial program] : Prop where
+  functorial_sequential
+      (βfγ : β → γ)
+      (γfδ : γ → δ) :
+    (((. >-> γfδ) ∘ (. >-> βfγ)) : program α β → program α δ) =
+     (. >-> (γfδ ∘ βfγ))
+--
+
+-- exercise
 class InCompleteExtraLawfulCreational
     [Functional program]
     [Sequential program]
@@ -697,7 +701,7 @@ theorem functorial_identity'
   (αpβ : FromComputationValuedFunction computation α β) :
     (αpβ >-> id :
       FromComputationValuedFunction computation α β)
-      = αpβ := by
+      = αpβ :=
   let αfcβ := αpβ.toComputationValuedFunction
   calc
     (αpβ >-> id)
@@ -1073,19 +1077,19 @@ instance : Monad Task where
 instance : MonadAsync Task where
   async := Task.spawn
 
-abbrev TasksProgram :=
+abbrev TasksSpawningProgram :=
   FromComputationValuedFunction Task
 
-def materializeTasks {α β : Type} :
-  TasksProgram α β → (α → β) :=
+def materializeTasksSpawning {α β : Type} :
+  TasksSpawningProgram α β → (α → β) :=
     λ ⟨αftβ⟩ α => (αftβ α).get
 
-unsafe def tasksFibonacci :=
-  materializeTasks parallelFibonacci
+unsafe def tasksSpawningFibonacci :=
+  materializeTasksSpawning parallelFibonacci
 
-#eval tasksFibonacci 10
+#eval tasksSpawningFibonacci 10
 
--- #eval tasksFibonacci 24
+-- #eval tasksSpawningFibonacci 24
 
 def twoF : Nat → Nat := λ _ => 2
 

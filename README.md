@@ -240,7 +240,7 @@ as effectful functions. They are denotational artifacts. They do have a meaning 
 given a meaningful name. For example `λ x => x * x` can be given the meaningful name `square`. Of course functions and
 programs can also be looked at as operational artifacts. Just like functions, programs, by, somehow, running them, transform an initial value to a final value, but, somehow running them may perform side effects along the way. The "somehow" in the previous sentence is important, because it depends on the materialization corresponding to instances of the type constructor classes in terms of whose members the programs (recall, more precisely, program specificaton) have been written.
 
-By the way, a value can be an atomic-value or a composite-value, repesented as a (nested) tuple. As such values are
+By the way, a value can be an basic-value or a composite-value, repesented as a (nested) tuple. As such values are
 components of a component system.
 
 It is more natural to think denotationally, about "what", than to think operationally, about "how".
@@ -719,6 +719,8 @@ def let_
  def in_ : α → α := id
 ```
 
+The `a` in `αaβpγ` stands for "and".
+
 Think of `let_` as a library level keyword.
 
 `in_` is also a library level keyword that, depending on your taste, may make programs more readable.
@@ -787,6 +789,8 @@ def if_
 def else_ : α → α := id
 ```
 
+The `b` in `αpb` stands for `Bool`, the `t` in `t_ap` stands for `true`, and the `f` in `f_ap` stands for `false`.
+
 Think of `if_` as a library level keyword.
 
 `else_` is also a library level keyword that, depending on your taste, may make programs more readable.
@@ -838,27 +842,23 @@ separate `def`s.
 Primitive functions
 
 ```lean
-def isZeroF: Nat → Bool :=
-  λ n => n == 0
+def isZeroF: Nat → Bool := (. == 0)
 
-def isOneF : Nat → Bool :=
-  λ n => n == 1
+def isOneF : Nat → Bool := (. == 1)
 
-def oneF : Nat → Nat :=
-  λ _ => 1
+def oneF : Nat → Nat := λ _ => 1
 
-def minusOneF : Nat → Nat :=
-  λ n => n - 1
+def minusOneF : Nat → Nat := λ n => n - 1
 
-def minusTwoF : Nat → Nat :=
-  λ n => n - 2
+def minusTwoF : Nat → Nat := λ n => n - 2
 
 def addF : Nat × Nat → Nat :=
   λ ⟨n, m⟩ => n + m
 
-def multiplyF : Nat × Nat → Nat :=
-  λ ⟨n, m⟩ => n * m
+def multiplyF : Nat × Nat → Nat := λ ⟨n, m⟩ => n * m
 ```
+
+Some of the primitive functions use operation sections.
 
 Primitive programs
 
@@ -992,10 +992,9 @@ unsafe def factorial'
 
 ### About `unsafe`
 
-The `unsafe` keyword is used because the definitions above do not type check without them. Lean cannot prove that
-`fibonacci` and `factorial` can be used in a safe way. Note that they are program specifications. They need to be
-materialized before they can be used. Much in the same way, specifications of side effects are descriptions of
-side effects. They need to be materialized to be performed. 
+`Lean` cannot infer that `fibonacci` and `factorial` can be used in a safe way. I used the `unsafe`, but, maybe, there
+are more appropriate ways to solve this issue. Note that `fibonacci` and `factorial` are program specifications. They
+need to be materialized before they can be used. Much in the same way, specifications of side effects need to be materialized before they can be used. 
 
 It is instructive to compare this with a painting of something going wrong. It is safe to hang the painting on your   
 wall. Nothing will go wrong.
@@ -1043,14 +1042,12 @@ unsafe def parallelFibonacci
         add
 ```
 
-The only difference between `fibonacci` and `parallelFibonacci` is that `fibonacci` uses `&&&` while
-`parallelFibonacci` uses `&|&`.
-
+The only difference between `fibonacci` and `parallelFibonacci` is that `fibonacci` uses the sequential product operation `&&&` while `parallelFibonacci` uses the parallel product operation `&|&`.
 
 ### About `$`
 
 You may have questions about the usage of the `$` operation. It is an operation with low precedence that avoids using
-parentheses (`(` and `)`). Of course it is also possible to use nested parentheses as in
+parentheses (`(` and `)`). Of course it is also possible to use nested parentheses as in `fibonacci''`,
 
 ```lean
 unsafe def fibonacci''
@@ -1068,7 +1065,7 @@ unsafe def fibonacci''
     )
 ```
 
-and to use parentheses (in this example there is no need to nest them) as in
+and as in `factorial''` (there is no need to nest parentheses for `factorial''`).
 
 ```lean
 unsafe def factorial''
@@ -1093,13 +1090,13 @@ The basic member of `Creational` is `productSeq`. The basic member of `Parallel`
 
 *Exercise* :
 
-Define `bothSeq` (and infix `<&>`) using `productSeq` (infix `&&&`). The type of `bothSeq`
-is `program α γ → program β δ → program (α × β) (γ × δ)`.
+Define `bothSeq : program α γ → program β δ → program (α × β) (γ × δ)` (and infix `<&>`) using `productSeq`
+(infix `&&&`).
 
 *Hint* :
 
-Define `first` of type `program (α × β) α` and `second` of type `program (α × β) β` and, somehow, use them, together
-with `>=>`, from `Sequential`, and `&&&`, from `Creational`.
+Define `first : program (α × β) α` and `second : program (α × β) β` and, somehow, use them, together with `>=>`, from
+`Sequential`, and `&&&`, from `Creational`.
 
 This exercises is an examples of a "getting the types right puzzle".
 
@@ -1144,8 +1141,7 @@ infixl:60 " <&> " => bothSeq
 
 *Exercise* :
 
-Define `onlyFirst` of type ` program α β → program (α × γ) (β × γ)`, and `onlySecond` of type
-`program γ δ → program (α × γ) (α × δ)`, and define `bothSeq'` using `onlyFirst` and `onlySecond`.
+Define `onlyFirst : program α β → program (α × γ) (β × γ)`, and `onlySecond : program γ δ → program (α × γ) (α × δ)`, and define `bothSeq'` using `onlyFirst` and `onlySecond`.
 
 *Hint* :
 
@@ -1201,17 +1197,14 @@ The types of `productSeq` and `productPar` resp. `bothSeq` and `bothPar` are the
 
 There is a choice to be made now.
 
-1. Should we treat the difference between the `Seq` and `Par` version as a specification concern?
+1. Should we treat the difference between the `Seq` and `Par` versions as a specification concern?
+2. Should we treat the difference between the `Seq` and `Par` versions as an implementation concern?
 
-or
-
-2. Should we treat the difference between the `Seq` and `Par` version as an implementation concern?
-
-`PSBP` goes for the former, if only because the order in which side effects are ferformed matter,
+`PSBP` goes for choice 1. , if only because the order in which side effects are performed matter,
 
 ### Exercise (`Functorial` using `Functional` and `Sequential`)
 
-You may wonder why neither `fibonacci` nor `factorial` use `Functorial`.
+You may wonder why neither `fibonacci` nor `factorial` require `Functorial`.
 
 *Exercise* :
 
@@ -1239,9 +1232,9 @@ instance
 
 ### Using `Functorial` with `Functional`, and `Creational`
 
-So why introducing `Functorial` in the first place? Well, the combination of `Functorial` with `Functional` and
-`Creational` is sufficiently expressive to write interesting programs with. They are more flexible as far as
-implementation and corresponding materialization is concerned than the ones using `Sequential`.
+So why introducing `Functorial` in the first place? Well, the combination of `Functional`, `Functorial` and
+`Creational` is sufficiently expressive to write interesting programs (recall, program specifications) with. They are
+more flexible as far as implementation and corresponding materialization is concerned than the ones using `Functional`, `Functorial` and `Sequential`.
 
 Below are two programs, `twiceMinusOneFunctorial` and `twiceMinusOneSequential`.
 
@@ -1261,10 +1254,10 @@ def twiceMinusOneSequential
     minusOne &&& minusOne >=> add
 ```
 
-`twiceMinusOneSequential` uses the more powerful of `Sequential` while `twiceMinusOneFunctorial` uses the less powerful
+`twiceMinusOneSequential` uses the more powerful `Sequential` while `twiceMinusOneFunctorial` uses the less powerful
 `Functorial`. Using `Sequential` is, in this case, an unnecessary overkill because all programs involved are effectfree.
 
-That being said, you may argue that what you have read so far is also an unnecessary overkill because, after all, so far, I only defined effectfree programs. But think of replacing `minusOne` and/ or `minusTwo` by an effectful program
+That being said, you may argue that what you have read so far is also an unnecessary overkill because, after all, so far, I only defined effectfree programs. But think of replacing `minusOne` and/or `minusTwo` by an effectful program.
 Having more implementation and corresponding materialization flexibility when dealing with side effects can really be useful. A standard example is more flexible error handling when processing a submitted web form. Another example is error correction when parsing a document.
 
 ### Exercise (`productSeq'` using `let_`)
@@ -1333,6 +1326,8 @@ def sum'
             | Sum.inr β => β) >=> βpα
 ```
 
+The `o` in `γoβ` stands for "or".
+
 </details>
 
 ## Laws
@@ -1358,6 +1353,8 @@ class LawfulFunctional
 The `functional_identity` law relates function identity and program identity, and is `True` per definition.
 
 The `functional_sequential` law relates function sequential combination and program sequential combination.
+
+Not that, sometimes, the `Lean` type inference system needs some help with a type annotation.
 
 ### `class LawfulFunctorial`
 
@@ -1418,7 +1415,7 @@ The `sequential_associativity` law states that the sequential combination of pro
 
 `Creational` comes with laws.
 
-They all involve `onlyFirst`. They are the `arrow` laws (`Sequential` is involved, `Conditional` is not involved).
+They are all using `onlyFirst`. They are the `arrow` laws (`Sequential` is required, `Conditional` is not required).
 
 Let
 
@@ -1519,11 +1516,33 @@ class LawfulConditional
       βpα
 ```
 
+### Exercise (alternative `functorial_sequential` law)
+
+*Exercise*
+
+Define an alternativce `functorial_sequential`, not using `αpβ`, but using `>->` operation sections instead.
+
+*Hint*
+
+You may need to help the `Lean` type inference system with a type annotation.
+
+<details>
+
+class AlternativeLawfulFunctorial
+    [Functorial program] : Prop where
+  functorial_sequential
+      (βfγ : β → γ)
+      (γfδ : γ → δ) :
+    (((. >-> γfδ) ∘ (. >-> βfγ)) : program α β → program α δ) =
+     (. >-> (γfδ ∘ βfγ))
+
+</details>
+
 ### Exercise (extra `Creational` law)
 
 *Exercise*
 
-Make the extra `Creational` law below complete
+Make the extra `Creational` law below complete, replacing `sorry`.
 
 ```lean
 class InCompleteExtraLawfulCreational
@@ -1563,7 +1582,7 @@ class ExtraLawfulCreational
 
 *Exercise*
 
-Is the following law a valid one (open question)?
+Is the following law a reasonable one (open question)?
 
 ```lean
 class ExtraLawfulCreationalQuestion
@@ -1583,8 +1602,8 @@ class ExtraLawfulCreationalQuestion
 
 <details>
 
-The order of the side effects performed by the programs involved matters.
-Therefore, because of it's distributive nature, this law is unlikely to be a valid one for most implementations.
+The order of the side effects performed by the programs involved matters. Therefore, because of it's distributive
+nature, this law is unlikely to be a valid one for most implementations.
 
 In fact, for the computation valued function implementation (see next section).
 
@@ -1597,9 +1616,9 @@ In fact, for the computation valued function implementation (see next section).
 
 *Exercise*
 
-Make the extra `Creational` law for `let_` below complete.
+Make the extra `Creational` law for `let_` below complete, replacing `sorry`.
 
-Is the law a valid one (open question)?
+Is the law a reasonable one (open question)?
 
 ```lean
 class IncompleteLawfulCreationalLet
@@ -1631,9 +1650,8 @@ class LawfulCreationalLet
       (let_ αpβ (αaβpγ >=> γpδ))
 ```
 
-The order of the side effects performed by the programs involved matters.
-In this case it's sequential nature does not matter, therefore this law is likely to be a valid one for most
-implementations.
+The order of the side effects performed by the programs involved matters. In this case it's sequential nature does not
+matter. Therefore this law is likely to be a valid one for most implementations.
 
 </details>
 
@@ -1643,7 +1661,7 @@ implementations.
 
 Define an extra `Conditional` law for `if_`, similar to the extra `Creational` law for `let_`.
 
-Is the law a valid one (open question)?
+Is the law a reasonable one (open question)?
 
 ### Solution (extra `Conditional` law for `if_`)
 
@@ -1664,15 +1682,13 @@ class LawfulCreationalIf
       ((if_ αpb (t_apβ >=> βpγ) (f_apβ >=> βpγ)))
 ```
 
-The order of the side effects performed by the programs involved matters.
-In this case it's sequential nature does not matter, therefore this law is likely to be a valid one for most
-implementations.
+The order of the side effects performed by the programs involved matters. In this case it's sequential nature does not matter. Therefore this law is likely to be a valid one for most implementations.
 
 </details>
 
 ## Computation Valued Functions
 
-Using computation valued functions is a generic way to implement the program related classes in terms of the computation
+Using computation valued functions is a generic way to implement programming related classes in terms of the computing
 related classes.
 
 ```lean
@@ -1742,13 +1758,14 @@ instance
             λ cδ => .mk <$> cγ <*> cδ⟩
 ```
 
-A word of warning, The code above used `⟨` and `⟩`, different from `(` and `)`, to asemble and disassemble `structure`'s
-like `FromComputationValuedFunction`.
+The `u` in `ufα` stands for `Unit`.
+
+A word of warning, The code above used angle brackets `⟨` and `⟩`, different from parentheses `(` and `)`, to asemble
+and disassemble `FromComputationValuedFunction` `structure`'s.
 
 ## Theorems
 
-The laws of the various classes need to be proved for the various instances. First we prove them and next we let `Lean`
-prove them for us.
+The laws of the various classes need to be proved for the various instances. First we prove them using `calc` and next we let `Lean` prove them for us using `by simp`.
 
 ### `Functional` theorems
 
@@ -1769,7 +1786,7 @@ Theorem `functional_identity` below is proved by definition using `calc` and
 ```
 Theorem `functional_sequential'` also uses `congrArg` and `funext`.
 
-Theorem `functional_sequential'` uses the `pure_bind` law of `LawfulMonad`.
+Theorem `functional_sequential'` also uses the `pure_bind` law of `LawfulMonad`.
 
 ```lean
 theorem functional_sequential'
@@ -1799,7 +1816,7 @@ theorem functional_sequential'
           := rfl
 ```
 
-Theorem `functional_sequential` uses `by simp` to let `Lean` do the heavy lifting
+Theorem `functional_sequential` uses `by simp` to let `Lean` do the heavy lifting.
 
 ```lean
 @[simp] theorem functional_sequential
@@ -1814,12 +1831,13 @@ Theorem `functional_sequential` uses `by simp` to let `Lean` do the heavy liftin
   simp[asProgram, andThenP]
 ```
 
-Note that `functional_sequential` is not annotated by `@[simp]` so that `functional_sequential'` cannot use it. As a
-consequence it is necessary to tell `Lean` to unfold everything in order for it to see the real definitions involved.
+Note that `functional_sequential` is not annotated by `@[simp]` so that `functional_sequential'` cannot use it. 
+
+It is necessary to tell `Lean` to unfold everything in order for it to see the definitions involved.
 
 ### `Functorial` theorems
 
-Theorem `functorial_identity'` the `id_map` law of `LawfulFunctor`.
+Theorem `functorial_identity'` uses the `id_map` law of `LawfulFunctor`.
 
 ```lean
 theorem functorial_identity'
@@ -1829,7 +1847,7 @@ theorem functorial_identity'
   (αpβ : FromComputationValuedFunction computation α β) :
     (αpβ >-> id :
       FromComputationValuedFunction computation α β)
-      = αpβ := by
+      = αpβ :=
   let αfcβ := αpβ.toComputationValuedFunction
   calc
     (αpβ >-> id)
@@ -1843,7 +1861,7 @@ theorem functorial_identity'
           := rfl
 ```
 
-Theorem `functorial_identity` uses `simp` to let `Lean` do the heavy lifting
+Theorem `functorial_identity` uses `by simp` to let `Lean` do the heavy lifting.
 
 ```lean
 @[simp] theorem functorial_identity
@@ -1888,7 +1906,9 @@ theorem functorial_sequential'
           := rfl
 ```
 
-Theorem `functorial_sequential` uses `simp` to let `Lean` do the heavy lifting
+Theorem `functorial_sequential` uses `by simp` to let `Lean` do the heavy lifting.
+
+Theorem `functorial_sequential` also uses `function_sequential`.
 
 ```lean
 @[simp] theorem function_sequential
@@ -1944,7 +1964,7 @@ theorem sequential_right_identity'
             := rfl
 ```
 
-Theorem `sequential_right_identity` uses `simp` to let `Lean` do the heavy lifting
+Theorem `sequential_right_identity` uses `by simp` to let `Lean` do the heavy lifting.
 
 ```lean
 @[simp] theorem sequential_right_identity
@@ -1982,7 +2002,7 @@ Theorem `sequential_left_identity'` uses the `pure_bind` law of `LawfulMonad`.
             := rfl
 ```
 
-Theorem `sequential_left_identity` uses `simp` to let `Lean` do the heavy lifting
+Theorem `sequential_left_identity` uses `by simp` to let `Lean` do the heavy lifting.
 
 ```lean
 @[simp] theorem sequential_left_identity
@@ -2035,7 +2055,7 @@ Theorem `sequential_associative'` uses the `pure_assoc` law of `LawfulMonad`.
           := rfl
 ```
 
-Theorem `sequential_associative` uses `simp` to let `Lean` do the heavy lifting
+Theorem `sequential_associative` uses `by simp` to let `Lean` do the heavy lifting.
 
 ```lean
 @[simp] theorem sequential_associative
@@ -2148,7 +2168,7 @@ theorem creational_onlyFirst_asProgram'
         rfl
 ```
 
-Theorem `creational_onlyFirst_asProgram` uses `simp` to let `Lean` do the heavy lifting
+Theorem `creational_onlyFirst_asProgram` uses `by simp` to let `Lean` do the heavy lifting.
 
 ```lean
 @[simp] theorem creational_onlyFirst_asProgram
@@ -2166,7 +2186,7 @@ Theorem `creational_onlyFirst_asProgram` uses `simp` to let `Lean` do the heavy 
 
 By now you probably agree that `calc` based proofs can become tedious.
 
-In what follows, I will, mostly, only show the `simp` based proofs.
+In what follows, I will, mostly, only show the `by simp` based proofs.
 
 ```lean
 @[simp] theorem creational_onlyFirst_sequential
@@ -2273,7 +2293,7 @@ def materializeActive :
   λ ⟨αfaβ⟩ α => (αfaβ α).run
 ```
 
-We can now run programs in an active way.
+We can now evaluate expresions in an active way, using `lake build`, evaluating all `#eval`'s.
 
 ```lean
 unsafe def activeFibonacci :=
@@ -2346,7 +2366,7 @@ def materializeReactive {α β : Type} :
 
 The `ρ` stands for the result of callback handling.
 
-We can now run programs in a reactive way.
+We can now evaluate expressions in a reactive way.
 
 ```lean
 unsafe def reactiveFibonacci :=
@@ -2372,9 +2392,10 @@ info: PSBP/All.lean:986:0: 3628800
 
 We did not change the definition of our programs, we only materialized them in another way!
 
-# `TasksProgram`
+# `TasksSpawningProgram`
 
-There is a bit more work to be done for asynchrounous computation based implementations. They spawn tasks.
+There is a bit more work to be done for asynchrounous computation based implementations. They spawn tasks. For
+notational convenience we define an `instance : Monad Task`.
 
 ```lean
 instance : Monad Task where
@@ -2384,33 +2405,33 @@ instance : Monad Task where
 instance : MonadAsync Task where
   async := Task.spawn
 
-abbrev TasksProgram :=
+abbrev TasksSpawningProgram :=
   FromComputationValuedFunction Task
 
-def materializeTasks {α β : Type} :
-  TasksProgram α β → (α → β) :=
+def materializeTasksSpawning {α β : Type} :
+  TasksSpawningProgram α β → (α → β) :=
     λ ⟨αftβ⟩ α => (αftβ α).get
 ```
 
 We can now run parallel programs in a tasks spawning way.
 
 ```lean
-unsafe def tasksFibonacci :=
-  materializeTasks fibonacci
+unsafe def tasksSpawningFibonacci :=
+  materializeTasksSpawning fibonacci
 
-#eval tasksFibonacci 10
+#eval tasksSpawningFibonacci 10
 ```
 
 ```lean
 info: PSBP/All.lean:1005:0: 89
 ```
 
-We only slightly change the definition of our program and materialized if in another way!
+We only slightly changed the definition of our program and materialized if in another way!
 
 You may wish to also try
 
 ```lean
-#eval tasksFibonacci 24
+#eval tasksSpawningFibonacci 24
 ```
 
 and have a look at how it keeps all threads of your OS busy (e.g. on `Linux` using `htop`).
@@ -2421,8 +2442,10 @@ and have a look at how it keeps all threads of your OS busy (e.g. on `Linux` usi
 
 Pointfree programming, like is done for `fibonacci` and `factorial` may be a elegant, but `PSBP` also enables, and,
 for reasons of elegance, sometimes needs, positional programming. Let's first start with `Functorial` based positional
-programming. Suppose we want to run the function that transforms an initial (argument) value `n` of type `Nat` to the
-final (result) value `(n-2) + 2 * (n-1) + 3`. `somePositionalProgramFunctorial` below could be a solution.
+programming. Suppose we want to define a program that transforms an initial value `n` of type `Nat` to the final value
+`(n-2) + 2 * (n-1) + 3`. 
+
+`somePositionalProgramFunctorial` below could be a solution.
 
 Let
 
@@ -2471,8 +2494,7 @@ info: PSBP/All.lean:1042:0: 29
 
 You may argue that, as for as the acting function involved is concerned, we are back to pointful programming. Well,
 somehow you are right, but notice that all `n`'s involved have indices (`1`, `2`, `3` and `4`). They can be thought of
-as positions. So we are essentially accessing values at positions of multi-values. For this example the multi-value
-involved is homogeneous but it might as well be a heterogeneous one. More about this later.
+as positions. So we are essentially accessing values at positions of a composite-value. For this example the composite-value involved is homogeneous but it might as well be a heterogeneous one. More about this later.
 
 ### Using `Sequential`
 
@@ -2523,7 +2545,7 @@ infixl:45 " @ " => at_
 
 `at_` also has infix notation `@`.
 
-The `σ` stands for (runtime) "stack", and `σ × β` stands for `β` pushed onto `σ`. More about this later.
+The `σ` stands for "(runtime) stack", and `σ × β` stands for `β` pushed onto `σ`. More about this later.
 
 ### `instance Positional`
 
@@ -2544,9 +2566,10 @@ instance
         let_ (σpα >=> αpβ)
 ```
 
-Think of `σpα` as accessing a (multi-)value, `α`, on a runtime stack, `σ`. Think of `αpβ` as transforming that
-(multi-)value to `β`. `let_` then pushes `β` on `σ` obtaining a runtime stack`σ × β`. So, if it possible to transform the runtime stack `σ` to `α`, to transform `α` to an intermediate value `β` and to transform `σ × β` to `γ`, then it
-is possible to transform `σ` to `γ`.
+Think of `σpα` as accessing a (composite-)value, `α`, on a runtime stack, `σ`. Think of `αpβ` as transforming that
+(composite-)value to `β`. `let_` then pushes `β` on `σ` obtaining a runtime stack`σ × β`. 
+
+`at_` states that, if it possible to transform a value `α`, accessed on the runtime stack `σ`, to an intermediate value `β`, and to transform `σ × β` to `γ`, then it is possible to transform the runtime stack `σ` to `γ`.
 
 ### Some positions
 
@@ -2571,7 +2594,7 @@ def positionOneAndTwo
 -- ...
 ```
 
-`positionOne` and `positionTwo` are basic-value positions. `positionOneAndTwo` is a multi-value position.
+`positionOne` and `positionTwo` are basic-value positions. `positionOneAndTwo` is a composite-value position.
 
 ### `positionalFactorialOfFibonacci`
 
@@ -2592,7 +2615,7 @@ unsafe def positionalFactorialOfFibonacci
 
 `Positional` is not part of the list of required class instances because it can be inferred.
 
-We can now run this positional program with an initial value pushed on the runtime stack.
+We can now run this positional program with an initial value pushed on an empty runtime stack `()`.
 
 ```lean
 unsafe def factorialOfFibonacci: (Unit × Nat) → Nat :=
@@ -2607,7 +2630,7 @@ info: PSBP/All.lean:1115:0: 40320
 
 ### `positionalSumOfFibonacciAndFactorial`
 
-Below is a positional program, `positionalSumOfFibonacciAndFactorial`. It uses only uses three positions. Positions go
+Below is a positional program, `positionalSumOfFibonacciAndFactorial`. It uses only three positions. Positions go
 up starting from their use site.
 
 ```lean
@@ -2625,7 +2648,7 @@ unsafe def positionalSumOfFibonacciAndFactorial
 
 `Positional` is not part of the list of required class instances because it can be inferred.
 
-We can now run this positional program with an initial value pushed on the runtime stack.
+We can now run this positional program with an initial value pushed on an empty runtime stack `()`.
 
 ```lean
 unsafe def sumOfFibonacciAndFactorial: (Unit × Nat) → Nat :=
@@ -2668,8 +2691,8 @@ unsafe def positionalSumOfFibonacciAndFactorial'
           identity
 ```
 
-We can now run those runtime stack showing positional program with an initial value pushed on the runtime stack.
-
+We can now run those runtime stack showing positional program with an initial value pushed on an empty runtime stack
+`()`.
 
 ```lean
 unsafe def factorialOfFibonacci' :
