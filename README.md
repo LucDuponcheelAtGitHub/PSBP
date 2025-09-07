@@ -2366,6 +2366,10 @@ def materializeReactive {α β : Type} :
 
 The `ρ` stands for the result of callback handling.
 
+The `rt` in `αfrtaβcβ` stands for `ReactiveT`.
+
+The `a` in `αfrtaβcβ` stands for `Active`.
+
 We can now evaluate expressions in a reactive way.
 
 ```lean
@@ -2446,7 +2450,7 @@ programming. Suppose we want to define a program that transforms an initial valu
 `(n-2) + 2 * (n-1) + 3`. 
 
 `somePositionalProgramFunctorial` below could be a solution.
-
+ 
 Let
 
 ```lean
@@ -2549,7 +2553,7 @@ The `σ` stands for "(runtime) stack", and `σ × β` stands for `β` pushed ont
 
 ### `instance Positional`
 
-The `at_` library level keyword of `Positional` can be defined in terms of `Functional`, `Sequential` and `Creational`.
+The `at_` library level keyword of `Positional` can be defined using `Functional`, `Sequential` and `Creational`.
 
 ```lean
 instance
@@ -2570,6 +2574,8 @@ Think of `σpα` as accessing a (composite-)value, `α`, on a runtime stack, `σ
 (composite-)value to `β`. `let_` then pushes `β` on `σ` obtaining a runtime stack`σ × β`. 
 
 `at_` states that, if it possible to transform a value `α`, accessed on the runtime stack `σ`, to an intermediate value `β`, and to transform `σ × β` to `γ`, then it is possible to transform the runtime stack `σ` to `γ`.
+
+Runtime stack positions go up starting from their use site. More about this later.
 
 ### Some positions
 
@@ -2598,8 +2604,8 @@ def positionOneAndTwo
 
 ### `positionalFactorialOfFibonacci`
 
-Below is a positional program, `positionalFactorialOfFibonacci`. It uses only uses `positionOne`. Positions go up
-starting from their use site.
+Below is a positional program, `positionalFactorialOfFibonacci`. It uses only uses `positionOne`. For `fibonacci` it is
+the position of the initial value that is pushed on the runtime stack. For `factorial` it is the position of the final value of `fibonacci` that is pushed on the runtime stack. 
 
 ```lean
 unsafe def positionalFactorialOfFibonacci
@@ -2630,8 +2636,8 @@ info: PSBP/All.lean:1115:0: 40320
 
 ### `positionalSumOfFibonacciAndFactorial`
 
-Below is a positional program, `positionalSumOfFibonacciAndFactorial`. It uses only three positions. Positions go
-up starting from their use site.
+Below is a positional program, `positionalSumOfFibonacciAndFactorial`. It uses three positions. For `fibonacci` it is
+the position of the initial value that is pushed on the runtime stack. For `factorial` it is also the position of the initial value that is pushed on the runtime stack, for `add` it is a composite-value consisting of the position of the final value of `fibonacci` that is pushed on the runtime stack and the position of the final value of `factorial` that is pushed on the runtime stack
 
 ```lean
 unsafe def positionalSumOfFibonacciAndFactorial
@@ -2753,27 +2759,27 @@ def modifyStateWith
           first
 ```
 
-`modifyStateWith` modifies the state using a function.
+`modifyStateWith` modifies the state using a function `σfσ : σ → σ`.
 
-### `withInitialStateAsInitialValue`
+### `usingInitialStateAsInitialValue`
 
 ```lean
-def withInitialStateAsInitialValue
+def usingInitialStateAsInitialValue
     [Functional program]
     [Sequential program]
     [Creational program]
     [Conditional program]
     [WithState σ program] :
-  program σ τ → program α τ :=
-    λ σpτ =>
-      readState >=> σpτ
+  program σ β → program α β :=
+    λ σpβ =>
+      readState >=> σpβ
 ```
 
-Given a program `σpτ`, `withInitialStateAsInitialValue` transforms it to use the initial state as initial value.
+`usingInitialStateAsInitialValue` use the initial state as initial value.
 
 ### `instance WithState σ`
 
-`WithState σ` is implemented in terms of `MonadStateOf`.
+`WithState σ` is implemented using `MonadStateOf`.
 
 ```lean
 instance [MonadStateOf σ computation] :
@@ -2792,9 +2798,7 @@ abbrev ProgramWithState σ computation :=
 def materializeWithState
     [Monad computation] {α β : Type} :
   ProgramWithState σ computation α β →
-  α →
-  σ →
-  computation β :=
+  (α → σ → computation β) :=
     λ ⟨αfstσcβ⟩ =>
       λ α =>
         λ σ =>
@@ -2802,9 +2806,11 @@ def materializeWithState
             λ (β, _) => pure β
 
 def materializeActiveWithState {α β : Type} :
-  ProgramWithState σ Active α β → α → σ → β :=
+  ProgramWithState σ Active α β → (α → σ → β) :=
     materializeWithState
 ```
+
+`ProgramWithState σ computation` is implemented using `StateT`.
 
 ### `class LawfulWithState`
 
@@ -2814,10 +2820,11 @@ class LawfulWithState
     [Sequential program]
     [WithState σ program] : Prop where
   withState_write_read :
-    ((writeState : program σ Unit) >=>
-      (readState : program Unit σ)) =
+    ((writeState : program σ Unit) >=> readState) =
       identity
 ```
+
+Writing a value to be used as current state and then reading the current state yields that value. 
 
 ### theorem `withState_write_read`
 
@@ -2827,14 +2834,14 @@ Let
 class LawfulStateOf (σ : Type) (computation : Type → Type)
     [Monad computation]
     [MonadStateOf σ computation] : Prop where
-  stateOf_write_read :
+  stateOf_set_getThe :
     ((λ s => set s >>= λ _ => getThe σ) :
        σ → computation σ) =
       (pure)
 
-export LawfulStateOf (stateOf_write_read)
+export LawfulStateOf (stateOf_set_getThe)
 
-attribute [simp] stateOf_write_read
+attribute [simp] stateOf_set_getThe
 ```
 
 in
@@ -2849,35 +2856,40 @@ in
     identity := by simp [andThenP, identity, asProgram]
 ```
 
+`theorem withState_write_read` is proved using the `stateOf_set_getThe` law of `class LawfulStateOf`.
+
 ### `statefulFibonacciPair`
 
 Program `statefulFibonacciPair` below shows the effectfulness of programs with state by using the
-initial state as initial (argument) value and modifying it.
+initial state as initial value and modifying the state.
 
 Let
 
 ```lean
-unsafe def fibonacciWithState
+unsafe def statefulFibonacci
     [Functional program]
     [Creational program]
     [Sequential program]
     [Conditional program]
     [WithState Nat program] :
   program Unit Nat :=
-    withInitialStateAsInitialValue fibonacci >=>
+    usingInitialStateAsInitialValue fibonacci >=>
     modifyStateWith (λ σ => σ + 1)
 ```
 
-We can now run this program with state.
+in
 
 ```lean
 unsafe def statefulFibonacciPair :
   Unit → Nat → (Nat × Nat) :=
     materializeActiveWithState
-    (fibonacciWithState &&& fibonacciWithState)
+    (statefulFibonacci &&& statefulFibonacci)
 
 #eval statefulFibonacciPair () 10
 ```
+
+We can now run this program with state.
+
 
 ```lean
 info: PSBP/All.lean:1253:0: (89, 144)
@@ -2893,23 +2905,22 @@ info: PSBP/All.lean:1253:0: (89, 144)
 class WithFailure
     (ε : outParam Type)
     (program : Type → Type →Type) where
-  failureWith {α β : Type} : (α → ε) → program α β
+  failWith {α β : Type} : (α → ε) → program α β
 
-export WithFailure (failureWith)
+export WithFailure (failWith)
 ```
 
 ### `instance WithFailure ε` (fast failure)
 
-`WithFailure ε` is implemented in terms of `FailureT`, which is defined in terms of `⊕`. Given an initial (argument)
-value, a program with failure may transform it to a final failure (result) value (at left) or a final succedd (result)
-value (at right).
+`WithFailure ε` is implemented using `FailureT`, which is defined using `⊕`. Given an initial value, a program with
+failure may transform it to a final failure value (at left) or a final success value (at right).
 
 ```lean
 structure FailureT
     (ε : Type)
     (computation : Type → Type)
     (β : Type) : Type where
-  toComputationOfSum : computation (ε ⊕ β)
+  toComputationOfFailureOrSuccess : computation (ε ⊕ β)
 ```
 
 ```lean
@@ -2926,7 +2937,7 @@ instance [Monad computation] :
   bind :=
     λ ⟨cεoα⟩ αfftεcβ =>
       ⟨cεoα >>= λ εoα => match εoα with
-        | .inr α  => (αfftεcβ α).toComputationOfSum
+        | .inr α  => (αfftεcβ α).toComputationOfFailureOrSuccess
         | .inl ε  => pure (.inl ε)⟩
 
 instance {ε : Type}
@@ -2934,11 +2945,13 @@ instance {ε : Type}
   WithFailure ε
     (FromComputationValuedFunction
       (FailureT ε computation)) where
-  failureWith :=
+  failWith :=
     λ αfε =>
       ⟨λ α =>
         ⟨pure $ Sum.inl $ αfε α⟩⟩
 ```
+
+This kind of failure is specified and implemented as a sum, an alternative final value. This kind of failure is not specified as an effect and implemented as a side effect.
 
 ### `ProgramWithFailure`
 
@@ -2952,14 +2965,16 @@ def materializeWithFailure
   α →
   computation (ε ⊕ β) :=
     λ ⟨αftεcβ⟩ α =>
-      (αftεcβ α).toComputationOfSum
+      (αftεcβ α).toComputationOfFailureOrSuccess
 
 def materializeActiveWithFailure {α β : Type} :
  ProgramWithFailure ε Active α β → α → (ε ⊕ β) :=
   materializeWithFailure
 ```
 
-`instance Monad (FailureT ε computation)` and `materializeActiveWithFailure` above cause programs to a fail fast when a
+`ft` in `αftεcβ` stands for `FailureT`.
+
+`instance Monad (FailureT ε computation)` and `materializeActiveWithFailure` above cause programs to fail fast when a
 first exception has been encountered. The examples below illustrate this.
 
 ### `safeDiv`
@@ -2967,8 +2982,7 @@ first exception has been encountered. The examples below illustrate this.
 Let
 
 ```lean
-def isNotZeroF: Nat → Bool :=
-  λ n => n != 0
+def isNotZeroF: Nat → Bool := (. != 0)
 
 def unsafeDivF : Nat × Nat → Nat :=
   λ ⟨n, m⟩ => n / m
@@ -2998,22 +3012,22 @@ def safeDiv
   program (Nat × Nat) Nat :=
     if_ (second >=> isNotZero) unsafeDiv $
       else_ $
-        failureWith (λ (n, m) => s!"{n}/{m}")
+        failWith (λ (n, m) => s!"{n}/{m}")
 ```
 
 We can now run this program with fast failure.
 
 
 ```lean
-unsafe def failFastSafeDiv :
+def fastFailingSaveDiv :
   (Nat × Nat) → (String ⊕ Nat) :=
     materializeActiveWithFailure safeDiv
 
-#eval failFastSafeDiv (10, 5)
+#eval fastFailingSaveDiv (10, 5)
 
-#eval failFastSafeDiv (10, 2)
+#eval fastFailingSaveDiv (10, 2)
 
-#eval failFastSafeDiv (10, 0)
+#eval fastFailingSaveDiv (10, 0)
 ```
 
 ```lean
@@ -3038,15 +3052,15 @@ def twiceSafeDiv
 We can now run this program with fast failure.
 
 ```lean
-unsafe def failFastTwiceSafeDiv :
+unsafe def fastFailingTwiceSafeDiv :
   ((Nat × Nat) × Nat) → (String ⊕ Nat) :=
     materializeActiveWithFailure twiceSafeDiv
 
-#eval failFastTwiceSafeDiv ((10, 5), 2)
+#eval fastFailingTwiceSafeDiv ((10, 5), 2)
 
-#eval failFastTwiceSafeDiv ((10, 0), 2)
+#eval fastFailingTwiceSafeDiv ((10, 0), 2)
 
-#eval failFastTwiceSafeDiv ((10, 5), 0)
+#eval fastFailingTwiceSafeDiv ((10, 5), 0)
 ```
 
 ```lean
@@ -3055,12 +3069,80 @@ info: PSBP/All.lean:1359:0: Sum.inl "10/0"
 info: PSBP/All.lean:1361:0: Sum.inl "2/0"
 ```
 
+`### `addFastFailingSafeDivProduct`
+
+Let
+
+```lean
+def fastFailingSafeDiv
+    [Functional program]
+    [Creational program]
+    [Sequential program]
+    [Conditional program]
+    [WithFailure String program] :
+  program (Nat × Nat) Nat :=
+    if_ (second >=> isNotZero) unsafeDiv $
+      else_ $
+        failWith (λ (n, m) =>
+          s!"{n}/{m}")
+```
+
+and
+
+```lean
+def fastFailingSafeDivProduct
+[Functional program]
+    [Creational program]
+    [Sequential program]
+    [Conditional program]
+    [WithFailure String program] :
+  program ((Nat × Nat) × (Nat × Nat)) (Nat × Nat) :=
+    (first >=> fastFailingSafeDiv) &&& (second >=>
+    fastFailingSafeDiv)
+```
+
+in
+
+```lean
+def addFastFailingSafeDivProduct
+[Functional program]
+    [Creational program]
+    [Sequential program]
+    [Conditional program]
+    [WithFailure String program] :
+  program ((Nat × Nat) × (Nat × Nat)) Nat :=
+    fastFailingSafeDivProduct >=>
+    add
+```
+We can now run this program with validation.
+
+```lean
+def fastFailingAddSafeDivProduct :
+  ((Nat × Nat) × (Nat × Nat)) → (String ⊕ Nat) :=
+    materializeActiveWithFailure addFastFailingSafeDivProduct
+
+#eval fastFailingAddSafeDivProduct ((10, 5), (8, 2))
+
+#eval fastFailingAddSafeDivProduct ((10, 0), (8, 2))
+
+#eval fastFailingAddSafeDivProduct ((10, 5), (8, 0))
+
+#eval fastFailingAddSafeDivProduct ((10, 0), (8, 0))
+```
+
+```lean
+info: PSBP/All.lean:1604:0: Sum.inr 6
+info: PSBP/All.lean:1606:0: Sum.inl "10/0"
+info: PSBP/All.lean:1608:0: Sum.inl "8/0"
+info: PSBP/All.lean:1610:0: Sum.inl "10/0"
+```
+
 ### `instance WithFailure ε` (validation)
 
-What about accumulating exceptions instead of failing fast?
+What about combining exceptions instead of failing fast?
 
-Accumulation is specified using a `Monoid` type class. For now, the neutral element `ν` is used, this means that only a
-semigroup is required instead of a monoid.
+Accumulation is specified using a `Monoid` type class. For now, the neutral element `ν` not is used, this means that
+only a semigroup is required instead of a monoid.
 
 ```lean
 class Monoid (μ : Type) where
@@ -3076,7 +3158,7 @@ Accumulation can, for example, be implemented using the `List α` type.
 
 ```lean
 instance : Monoid (List α) where
-  ν := []
+  ν := .nil
   combine := .append
 ```
 
@@ -3102,7 +3184,7 @@ instance
     seq :=
       λ ⟨cεoαfβ⟩ ufftεcα =>
         let cεoα :=
-          (ufftεcα ()).toComputationOfSum
+          (ufftεcα ()).toComputationOfFailureOrSuccess
         let εoαfεoαfβfεoβ {α β : Type} :
           (ε ⊕ α) → (ε ⊕ (α → β)) → (ε ⊕ β) :=
             λ εoα εoαfβ =>
@@ -3131,7 +3213,7 @@ def materializeWithValidation
   α →
   computation (ε ⊕ β) :=
     λ ⟨αftεcβ⟩ α =>
-      (αftεcβ α).toComputationOfSum
+      (αftεcβ α).toComputationOfFailureOrSuccess
 
 def materializeActiveWithValidation
     [Monoid ε] {α β : Type} :
@@ -3142,12 +3224,14 @@ def materializeActiveWithValidation
 `instance Functor (FailureT ε computation)`, `instance Applicative (FailureT ε computation)` and
 `materializeActiveWithValidation` above cause programs to accumulate all exceptions that are encountered.
 
-The examples below illustrate this accumulation behavior.
+The example below illustrate this accumulation behavior.
 
-### `accumulatingSafeDiv` revisited
+`### `addValidatingSafeDivProduct`
+
+Let
 
 ```lean
-def accumulatingSafeDiv
+def validatingSafeDiv
     [Functional program]
     [Creational program]
     [Sequential program]
@@ -3156,58 +3240,35 @@ def accumulatingSafeDiv
   program (Nat × Nat) Nat :=
     if_ (second >=> isNotZero) unsafeDiv $
       else_ $
-        failureWith (λ (n, m) =>
+        failWith (λ (n, m) =>
           [s!"{n}/{m}"])
 ```
 
-### `accumulatingSafeDivProduct`
+and
 
 ```lean
-def accumulatingSafeDivProduct
+def combiningSafeDivProduct
 [Functional program]
     [Creational program]
     [Sequential program]
     [Conditional program]
     [WithFailure (List String) program] :
   program ((Nat × Nat) × (Nat × Nat)) (Nat × Nat) :=
-    (first >=> accumulatingSafeDiv) &&& (second >=>
-    accumulatingSafeDiv)
+    (first >=> validatingSafeDiv) &&& (second >=>
+    validatingSafeDiv)
 ```
 
-We can now run this program with validation.
+in
 
 ```lean
-unsafe def validatingSafeDivProduct :
-  ((Nat × Nat) × (Nat × Nat)) → (List String ⊕ (Nat × Nat)) :=
-    materializeActiveWithValidation accumulatingSafeDivProduct
-
-#eval validatingSafeDivProduct ((10, 5), (8, 2))
-
-#eval validatingSafeDivProduct ((10, 0), (8, 2))
-
-#eval validatingSafeDivProduct ((10, 5), (8, 0))
-
-#eval validatingSafeDivProduct ((10, 0), (8, 0))
-```
-
-```lean
-info: PSBP/All.lean:1454:0: Sum.inr (2, 4)
-info: PSBP/All.lean:1456:0: Sum.inl ["10/0"]
-info: PSBP/All.lean:1458:0: Sum.inl ["8/0"]
-info: PSBP/All.lean:1460:0: Sum.inl ["10/0", "8/0"]
-```
-
-### `addAccumulatingSafeDivProduct`
-
-```lean
-def addAccumulatingSafeDivProduct
+def addValidatingSafeDivProduct
 [Functional program]
     [Creational program]
     [Sequential program]
     [Conditional program]
     [WithFailure (List String) program] :
   program ((Nat × Nat) × (Nat × Nat)) Nat :=
-    accumulatingSafeDivProduct >=>
+    validatingSafeDivProduct >=>
     add
 ```
 We can now run this program with validation.
@@ -3215,7 +3276,7 @@ We can now run this program with validation.
 ```lean
 unsafe def validatingSafeDivProduct :
   ((Nat × Nat) × (Nat × Nat)) → (List String ⊕ (Nat × Nat)) :=
-    materializeActiveWithValidation accumulatingSafeDivProduct
+    materializeActiveWithValidation validatingSafeDivProduct
 
 #eval validatingSafeDivProduct ((10, 5), (8, 2))
 

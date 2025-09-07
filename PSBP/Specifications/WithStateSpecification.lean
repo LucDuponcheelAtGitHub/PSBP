@@ -19,12 +19,12 @@ def modifyStateWith
         in_ $
           first
 
-def withInitialStateAsInitialValue
+def usingInitialStateAsInitialValue
     [Functional program]
     [Sequential program]
     [Creational program]
     [Conditional program]
     [WithState σ program] :
-  program σ τ → program α τ :=
-    λ σpτ =>
-      readState >=> σpτ
+  program σ β → program α β :=
+    λ σpβ =>
+      readState >=> σpβ
