@@ -2263,6 +2263,8 @@ class LawfulCreationalIfExercise
       ((if_ αpb (t_apβ >=> βpγ) (f_apβ >=> βpγ)))
 ```
 
+</details>
+
 The order of the side effects performed by the programs involved matters. In this case it's sequential nature does not 
 matter. Therefore this law is likely to be a valid one for most implementations.
 
