@@ -1,0 +1,10 @@
+name = "PSBP"
+version = "0.1.0"
+defaultTargets = ["psbp"]
+
+[[lean_lib]]
+name = "PSBP"
+
+[[lean_exe]]
+name = "psbp"
+root = "Main"
