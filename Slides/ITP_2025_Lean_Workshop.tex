@@ -1,0 +1,529 @@
+\documentclass[11pt]{beamer}
+
+\usetheme{Singapore}
+
+\definecolor{DarkRed}{rgb}{0.50,0,0}
+\definecolor{DarkGreen}{rgb}{0,0.50,0}
+\definecolor{DarkBlue}{rgb}{0,0,0.50}
+\definecolor{Black}{rgb}{0,0,0}
+
+\newcommand{\ttdr}[1]{{\tt{\color{DarkRed} #1}}}
+\newcommand{\emdr}[1]{{\em{\color{DarkRed} #1}}}
+\newcommand{\ttdg}[1]{{\tt{\color{DarkGreen} #1}}}
+\newcommand{\emdg}[1]{{\em{\color{DarkGreen} #1}}}
+\newcommand{\ttdb}[1]{{\tt{\color{DarkBlue} #1}}}
+\newcommand{\emdb}[1]{{\em{\color{DarkBlue} #1}}}
+
+\setbeamertemplate{frametitle}{
+\begin{centering}
+{\Large \textbf{\textmd{\insertframetitle}}}
+\end{centering}
+}
+
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamertemplate{footline}{%
+\begin{center}
+{\color{DarkBlue}{\large 
+\insertframenumber}
+\hspace{240pt}
+\includegraphics[height=20pt]{png/cycling.png}}
+\end{center}
+}
+
+\begin{document}
+
+\begin{frame}
+\vspace{25pt}
+\begin{center}
+\LARGE{
+\vspace{10pt}
+{\color{DarkGreen}{
+PSBP}}} \\
+\end{center}
+\vspace{10pt}
+\begin{center}
+\LARGE{
+{\color{DarkRed}{
+Program Specification Based Programming \\
+ITP 2025 Lean Workshop}}}
+\end{center}
+\vspace{10pt}
+\begin{center}
+\LARGE{
+{\color{DarkBlue}{
+Luc Duponcheel \\
+Programmer and Cyclist}}}
+\end{center}
+\vspace{10pt}
+\begin{center}
+\LARGE{
+{\color{DarkGreen}{
+\today}}}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Ceci n'est pas une pipe\end{center}}
+\begin{center}\includegraphics[height=160pt]{png/pipe.png}\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Programs and Computations\end{center}}
+\begin{itemize}
+\item<2-> the words \emdb{program} and \emdb{computation} \\
+have a \emdb{specific technical meaning} in this talk
+\item<3-> a \emdb{program} is a, \\
+potentially \emdb{effectful}, \emdb{function} abstraction
+\item<4-> a \emdb{computation} is a, \\
+potentially \emdb{effectful}, \emdb{expression} abstraction
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Open Components and Closed Components\end{center}}
+\begin{itemize}
+\item<2-> programs are \emdb{closed components}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+(apb >=> bpc) >=> cpd =
+  apb >=> (bpc >=> cpd)
+\end{verbatim}
+}
+}
+(\emdb{associativity} law)
+\item<3-> computations are \emdb{open components}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+ca >>= afcb >>= bfcc =
+  ca >>= fun a => afcb a >>= bfcc
+\end{verbatim}
+}
+}
+(\emdb{associativity} law)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Complexity and Difficulty\end{center}}
+\begin{itemize}
+\item<2-> programs are \emdb{less complex} than computations
+\item<3-> too much complexity becomes difficult for human beings
+\item<4-> many times being confronted with complexity is not fun 
+\item<5-> programs are, perhaps, \emdb{more difficult} than computations
+\item<6-> once and for all understanding difficulty is fun 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Denotational versus Operational\end{center}}
+\begin{itemize}
+\item<2-> programs are \emdb{denotational} artifacts
+\item<3-> computations are \emdb{operational} artifacts
+\item<4-> thinking denotationally is more natural for human beings
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}PSBP\end{center}}
+\begin{itemize}
+\item<2-> is a \emdb{program specification based programming library}
+\item<3-> can be seen as a \emdb{domain specific language} for \\
+the  \emdb{theory of programming} domain
+\item<4-> can be seen as a \emdb{programming course} for \ttdg{Lean} itself
+\item<5-> comes with \emdb{documentation} that can be seen as a course for \\
+students interested in the theory of programming
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}PSBP\end{center}}
+\begin{itemize}
+\item<2-> \ttdg{PSBP} supports
+\begin{itemize}
+\item<3-> \emdb{pointfree} programming
+\item<4-> \emdb{positional} programming
+\item<5-> \emdb{effectful} programming
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}PSBP\end{center}}
+\begin{itemize}
+\item<2-> \ttdg{PSBP} is work in progress
+\begin{itemize}
+\item<3-> all contributions are welcome 
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}fibonacci\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+unsafe def fibonacci
+    [Functional program]
+    [Sequential program]
+    [Creational program]
+    [Conditional program] :
+  program Nat Nat :=
+    if_ isZero one $
+      if_ isOne one $
+        (minusTwo >=> fibonacci) &&&
+        (minusOne >=> fibonacci) >=>
+        add
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}factorial\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+unsafe def factorial
+    [Functional program]
+    [Sequential program]
+    [Creational program]
+    [Conditional program] :
+  program Nat Nat :=
+    if_ isZero one $
+
+        (identity) &&&
+        (minusOne >=> factorial) >=>
+        multiply
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}factorial\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+unsafe def factorial
+    [Functional program]
+    [Sequential program]
+    [Creational program]
+    [Conditional program] :
+  program Nat Nat :=
+    if_ isZero one $ 
+
+        let_ (minusOne >=> factorial) $
+
+          multiply
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Programs versus Program Specifications\end{center}}
+\begin{itemize}
+\item<2-> \ttdg{fibonacci} and \ttdg{factorial} are not \emdb{programs}
+\item<3-> \ttdg{fibonacci} and \ttdg{factorial} are \emdb{program specifications}
+\item<4-> compare this with the painting that is a \emdb{pipe description} \\
+think of a specification as a (special kind of) description
+\item<5-> by abuse of language \\
+\emdb{program} is used instead of \emdb{program specification}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Abbreviation\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+abbrev function a b := a → b
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Functional\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+class Functional
+    (program : Type → Type → Type) where
+  asProgram {a b : Type} :
+    function a b → program a b
+\end{verbatim}
+}
+}
+\begin{itemize}
+\item<2-> a \emdb{function} (from a to b) can be used as \\
+an \emdb{effectfree program} (from a to b)
+\item<3-> by abuse of language \\
+(from a to b) is used instead of (from \emdb{type} a to \emdb{type} b)
+\end{itemize}
+\end{frame} 
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Sequential\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+class Sequential
+    (program : Type → Type → Type) where
+  andThenProgram {a b c : Type} :
+    program a b → program b c → program a c
+
+infixl:50 " >=> " => andThenProgram
+\end{verbatim}
+}
+}
+\begin{itemize}
+\item<2-> a \emdb{program} (from a to b) and a \emdb{program} (from b to c) \\
+can be \emdb{sequentially combined} \\
+obtaining a \emdb{program} (from a to c)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Functorial\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+class Functorial
+    (program : Type → Type → Type) where
+  functionAction {a b c : Type} :
+    function b c → (program a b → program a c)
+\end{verbatim}
+}
+}
+\begin{itemize}
+\item<2-> a \emdb{function} (from b to c) can \emdb{act}, \emdb{effectfree}, \\
+upon a \emdb{program} (from a to b) \\
+obtaining a \emdb{program} (from a to c)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Creational\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+class Creational
+    (program : Type → Type → Type) where
+  sequentialProduct {a b c : Type} :
+    program a b → program a c → program a (b x c)
+
+infixl:60 " &&& " => sequentialProduct
+\end{verbatim}
+}
+}
+\begin{itemize}
+\item<2-> a \emdb{program} (from a to b) and a \emdb{program} (from a to c) \\
+can be \emdb{sequentially combined} \\
+obtaining program (from a to b x c) \\
+transforming \emdb{to} a final \emdb{product value}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Conditional\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+class Conditional
+    (program : Type → Type → Type) where
+  sum {a b c : Type} :
+    program c a → program b a → program (c + b) a
+
+infixl:55 " ||| " => sum
+\end{verbatim}
+}
+}
+\begin{itemize}
+\item<2-> a \emdb{program} (from c to a) and a \emdb{program} (from b to a) \\
+can be combined \\
+obtaining a \emdb{program} (from c + b to a) \\
+transforming \emdb{from} an initial \emdb{sum value}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Parallel\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+class Parallel (program : Type → Type → Type) where
+  bothPar {a b c d : Type} :
+  program a c → program b d → program (a x b) (c x d)
+
+infixl:60 " |&| " => bothPar
+\end{verbatim}
+}
+}
+\begin{itemize}
+\item<2-> programs can be combined in \emdb{parallel}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}parallelFibonacci\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+unsafe def fibonacci
+    [Functional program]
+    [Sequential program]
+    [Creational program]
+    [Conditional program] :
+  program Nat Nat :=
+    if_ isZero one $
+      if_ isOne one $
+        (minusTwo >=> fibonacci) &|&
+        (minusOne >=> fibonacci) >=>
+        add
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Implementations\end{center}}
+\begin{itemize}
+\item<2-> \emdb{implementations} of \emdb{program specifications} are \\
+\emdb{computation valued function} based
+\item<3-> \emdb{definitions} of \emdb{functions} are \\
+\emdb{expression} based
+\item<4-> \ttdg{Sync}
+\item<5-> \ttdg{Async}
+\item<6-> ...
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Reactive Implementations\end{center}}
+\begin{itemize}
+\item<2->
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+abbrev ReactiveT
+    (r : Type)
+    (computation: Type → Type)
+    (a : Type) :=
+  (a → computation r) → computation r
+\end{verbatim}
+}
+}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Parallel Implementations\end{center}}
+\begin{itemize}
+\item<2-> \emdb{async} \ttdg{Task}
+\item<3-> \emdb{actor} \ttdg{???}
+\item<4-> ...
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}WithState\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+class WithState
+    (s : outParam Type)
+    (program : Type → Type → Type) where
+  readState {a : Type} : program a s
+  writeState : program s Unit
+\end{verbatim}
+}
+}
+\begin{itemize}
+\item<2-> Programs can handle \emdb{state}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}WithState Implementations\end{center}}
+\begin{itemize}
+\item<2-> \ttdg{StateT} \\
+(from \ttdg{Lean} standard library)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}WithFailure\end{center}}
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+class WithFailure
+    (e : outParam Type)
+    (program : Type → Type →  Type) where
+  failWith {a b : Type} : function a e → program a b
+\end{verbatim}
+}
+}
+\begin{itemize}
+\item<2-> programs can handle \emdb{failure}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}WithFailure Implementations\end{center}}
+\begin{itemize}
+\item<2->
+{\color{DarkGreen}	
+\normalsize{
+\begin{verbatim}
+def FailureT
+    (e : Type)
+    (computation : Type → Type)
+    (b : Type) : Type :=
+  computation (e + b)
+\end{verbatim}
+}
+}
+\item<3-> \ttdg{Monad} \\
+for \emdb{first failure}
+\item<4-> \ttdg{Applicative} and \ttdg{Monoid} \\
+for \emdb{accumulating failure}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}GitHub repository\end{center}}
+\begin{itemize}
+\item<2-> \emdb{https://github.com/LucDuponcheelAtGitHub/PSBP}
+\item<3-> Program Specification Bases Programming in Lean
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}More GitHub repositories\end{center}}
+\begin{itemize}
+\item<2-> \emdb{https://github.com/LucDuponcheelAtGitHub/yoneda}
+\item<3-> Pointfree Yoneda Lemma for \\
+Endofunctors of Functional Categories
+\item<4-> \emdb{https://github.com/LucDuponcheelAtGitHub/timeHybrids}
+\item<5-> Time Hybrids \\
+Unifying Framework for a Theory of Reality
+\end{itemize}
+\begin{itemize}
+\item<6-> all collaboration to convert to \ttdg{MathLib}-like \ttdg{Lean} is
+welcome
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Thanks for attending\end{center}}
+\begin{center}\emdb{luc.duponcheel@gmail.com}\end{center}
+\begin{center}\includegraphics[height=170pt]{png/cycling.png}\end{center}
+\end{frame}
+
+\end{document}
